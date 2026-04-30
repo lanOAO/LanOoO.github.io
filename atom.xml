@@ -278,9 +278,9 @@
     <category term="阅读记录" scheme="http://blog.lanouo.xyz/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
     
     
-    <category term="linux" scheme="http://blog.lanouo.xyz/tags/linux/"/>
-    
     <category term="读书笔记" scheme="http://blog.lanouo.xyz/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="linux" scheme="http://blog.lanouo.xyz/tags/linux/"/>
     
     <category term="命令行" scheme="http://blog.lanouo.xyz/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C/"/>
     
@@ -615,9 +615,9 @@
     
     <category term="hadoop" scheme="http://blog.lanouo.xyz/tags/hadoop/"/>
     
-    <category term="linux" scheme="http://blog.lanouo.xyz/tags/linux/"/>
-    
     <category term="大数据" scheme="http://blog.lanouo.xyz/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+    <category term="linux" scheme="http://blog.lanouo.xyz/tags/linux/"/>
     
     <category term="环境搭建" scheme="http://blog.lanouo.xyz/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
     

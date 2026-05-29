@@ -64,9 +64,9 @@
     
     <category term="secret" scheme="http://blog.lanouo.xyz/tags/secret/"/>
     
-    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
-    
     <category term="ros1" scheme="http://blog.lanouo.xyz/tags/ros1/"/>
+    
+    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
     
   </entry>
   
@@ -91,9 +91,9 @@
     
     <category term="secret" scheme="http://blog.lanouo.xyz/tags/secret/"/>
     
-    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
-    
     <category term="ros1" scheme="http://blog.lanouo.xyz/tags/ros1/"/>
+    
+    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
     
   </entry>
   
@@ -118,9 +118,9 @@
     
     <category term="secret" scheme="http://blog.lanouo.xyz/tags/secret/"/>
     
-    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
-    
     <category term="ros1" scheme="http://blog.lanouo.xyz/tags/ros1/"/>
+    
+    <category term="ros" scheme="http://blog.lanouo.xyz/tags/ros/"/>
     
   </entry>
   
@@ -290,9 +290,9 @@
     
     <category term="错误解决" scheme="http://blog.lanouo.xyz/tags/%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3/"/>
     
-    <category term="redis" scheme="http://blog.lanouo.xyz/tags/redis/"/>
-    
     <category term="docker" scheme="http://blog.lanouo.xyz/tags/docker/"/>
+    
+    <category term="redis" scheme="http://blog.lanouo.xyz/tags/redis/"/>
     
     <category term="配置" scheme="http://blog.lanouo.xyz/tags/%E9%85%8D%E7%BD%AE/"/>
     

@@ -20,24 +20,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.lanouo.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism-solarizedlight.min","dark":"prism-dark.min"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeInUp","post_header":"fadeIn","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInRight"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="在这里摊开一小片灵魂">
-<meta property="og:type" content="website">
-<meta property="og:title" content="幽篁里">
-<meta property="og:url" content="http://blog.lanouo.xyz/archives/2025/page/2/index.html">
+    <meta name="description" content="hdfs_ha的启动记录，仅方便查看用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程">
+<meta property="og:url" content="http://blog.lanouo.xyz/hdfs_ha_start.html">
 <meta property="og:site_name" content="幽篁里">
-<meta property="og:description" content="在这里摊开一小片灵魂">
+<meta property="og:description" content="hdfs_ha的启动记录，仅方便查看用">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-29T00:28:00.000Z">
+<meta property="article:modified_time" content="2026-05-29T00:30:58.026Z">
 <meta property="article:author" content="LanOoO">
+<meta property="article:tag" content="安装配置">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hadoop">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://blog.lanouo.xyz/archives/2025/page/2/">
+<link rel="canonical" href="http://blog.lanouo.xyz/hdfs_ha_start.html">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/2025/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://blog.lanouo.xyz/hdfs_ha_start.html","path":"hdfs_ha_start.html","title":"Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | 幽篁里</title>
+<title>Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程 | 幽篁里</title>
   
 
 
@@ -177,7 +182,7 @@ customElements.define('an_loading', CharAnimation);
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">幽篁里</h1>
+      <p class="site-title">幽篁里</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Quidquid latine dictum sit, altum sonatur.</p>
@@ -231,7 +236,7 @@ customElements.define('an_loading', CharAnimation);
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -244,6 +249,7 @@ customElements.define('an_loading', CharAnimation);
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop-HA-%E9%9B%86%E7%BE%A4%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">Hadoop HA 集群启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%90%AF%E5%8A%A8-ZooKeeper%EF%BC%88%E4%B8%89%E5%8F%B0%E6%9C%BA%E5%99%A8%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1. 启动 ZooKeeper（三台机器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%90%AF%E5%8A%A8-JournalNode%EF%BC%88%E4%B8%89%E5%8F%B0%E6%9C%BA%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">2. 启动 JournalNode（三台机器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%90%AF%E5%8A%A8-ZKFC"><span class="nav-number">1.3.</span> <span class="nav-text">3. 启动 ZKFC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%9C%A8-master-%E4%B8%8A%E6%89%A7%E8%A1%8C%EF%BC%88%E4%BB%85%E9%9C%80%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AC%A1%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. 在 master 上执行（仅需执行一次）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%9C%A8-slave1-%E4%B8%8A%E6%89%A7%E8%A1%8C%EF%BC%88%E4%BB%85%E9%9C%80%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AC%A1%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">5. 在 slave1 上执行（仅需执行一次）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%9C%A8-master-%E4%B8%8A%E5%90%AF%E5%8A%A8%E9%9B%86%E7%BE%A4"><span class="nav-number">1.6.</span> <span class="nav-text">6. 在 master 上启动集群</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">故障转移测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E5%90%8E%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="nav-number">3.</span> <span class="nav-text">故障转移后的恢复</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -302,72 +308,167 @@ customElements.define('an_loading', CharAnimation);
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 25 篇日志。 继续努力。</span>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.lanouo.xyz/hdfs_ha_start.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/AAAASpring.jpg">
+      <meta itemprop="name" content="LanOoO">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="幽篁里">
+      <meta itemprop="description" content="在这里摊开一小片灵魂">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程 | 幽篁里">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2025<span class="collection-year-count">12</span></span>
+
+      <time title="创建时间：2026-05-29 08:28:00 / 修改时间：08:30:58" itemprop="dateCreated datePublished" datetime="2026-05-29T08:28:00+08:00">2026-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">技术实践</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">系统运维</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>561</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>hdfs_ha的启动记录，仅方便查看用</p>
+<span id="more"></span>
+<h1 id="Hadoop-HA-集群启动流程"><a href="#Hadoop-HA-集群启动流程" class="headerlink" title="Hadoop HA 集群启动流程"></a>Hadoop HA 集群启动流程</h1><h2 id="1-启动-ZooKeeper（三台机器）"><a href="#1-启动-ZooKeeper（三台机器）" class="headerlink" title="1. 启动 ZooKeeper（三台机器）"></a>1. 启动 ZooKeeper（三台机器）</h2><p>ZooKeeper 安装目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/module/apache-zookeeper-3.7.1-bin</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/zkServer.sh start</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-启动-JournalNode（三台机器）"><a href="#2-启动-JournalNode（三台机器）" class="headerlink" title="2. 启动 JournalNode（三台机器）"></a>2. 启动 JournalNode（三台机器）</h2><p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs --daemon start journalnode</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-启动-ZKFC"><a href="#3-启动-ZKFC" class="headerlink" title="3. 启动 ZKFC"></a>3. 启动 ZKFC</h2><p>Hadoop 安装目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/module/hadoop-3.3.4/bin</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/hdfs --daemon start zkfc</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-在-master-上执行（仅需执行一次）"><a href="#4-在-master-上执行（仅需执行一次）" class="headerlink" title="4. 在 master 上执行（仅需执行一次）"></a>4. 在 master 上执行（仅需执行一次）</h2><p>启动 NameNode：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs --daemon start namenode</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-在-slave1-上执行（仅需执行一次）"><a href="#5-在-slave1-上执行（仅需执行一次）" class="headerlink" title="5. 在 slave1 上执行（仅需执行一次）"></a>5. 在 slave1 上执行（仅需执行一次）</h2><p>同步 NameNode 元数据：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs namenode -bootstrapStandby</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="6-在-master-上启动集群"><a href="#6-在-master-上启动集群" class="headerlink" title="6. 在 master 上启动集群"></a>6. 在 master 上启动集群</h2><p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./start-all.sh</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="故障转移测试"><a href="#故障转移测试" class="headerlink" title="故障转移测试"></a>故障转移测试</h1><p>关闭当前 Active NameNode：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 &lt;namenode_pid&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="故障转移后的恢复"><a href="#故障转移后的恢复" class="headerlink" title="故障转移后的恢复"></a>故障转移后的恢复</h1><p>启动 HDFS：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./start-dfs.sh</span><br></pre></td></tr></table></figure>
+
+<p>切换 NameNode 为 Standby：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs haadmin -transitionToStandby --forcemanual nn2</span><br></pre></td></tr></table></figure>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-07-10T00:48:18+08:00"
-              content="2025-07-10">
-          07-10
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/reference.html" itemprop="url">
-            <span itemprop="name">各种各样的参考页面</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="tag"><i class="fa fa-tag"></i> 安装配置</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"><i class="fa fa-tag"></i> 大数据</a>
+              <a href="/tags/Hadoop/" rel="tag"><i class="fa fa-tag"></i> Hadoop</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ros_robot.html" rel="prev" title="ROS仿真机器人">
+                  <i class="fa fa-angle-left"></i> ROS仿真机器人
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-07-09T22:27:08+08:00"
-              content="2025-07-09">
-          07-09
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/AutoHotkey1.html" itemprop="url">
-            <span itemprop="name">AutoHotkey —— 自动热键软件</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/archives/2025/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2025/">1</a><span class="page-number current">2</span>
-  </nav>
+
+
+
 
 </div>
   </main>

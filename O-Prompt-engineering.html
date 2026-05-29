@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#1c241c"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/AAAASpring.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32-32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16-16.ico">
+  <link rel="mask-icon" href="/images/AAAASpring.jpg" color="#1c241c">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.lanouo.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism-solarizedlight.min","dark":"prism-dark.min"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeInUp","post_header":"fadeIn","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInRight"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="本文使用deepseek翻译并存档">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GPT的最佳实践-openai">
+<meta property="og:url" content="http://blog.lanouo.xyz/O-Prompt-engineering.html">
+<meta property="og:site_name" content="幽篁里">
+<meta property="og:description" content="本文使用deepseek翻译并存档">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-29T02:12:00.000Z">
+<meta property="article:modified_time" content="2026-05-29T02:18:07.165Z">
+<meta property="article:author" content="LanOoO">
+<meta property="article:tag" content="参考">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://blog.lanouo.xyz/O-Prompt-engineering.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://blog.lanouo.xyz/O-Prompt-engineering.html","path":"O-Prompt-engineering.html","title":"GPT的最佳实践-openai"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GPT的最佳实践-openai | 幽篁里</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/7.2.0/pangu.umd.js" integrity="sha256-JnmRRnJK7DC6RQJbAJb6AXOM9OmWzS6z8eYultk/48Y=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+<script class="next-config" data-name="subtitle_typing" type="application/json">{"enable":true,"typing_speed":150,"deleting_speed":50,"pause_before_delete":5000,"pause_before_type":0,"subtitles":["今天过的怎么样*°▽°*","快点毕业吧(╬▔皿▔)╯","欢迎来到Lan的杂货铺^^","(⓿_⓿)上班shangban……","Claude Code好好用(╯▽╰ )","没想到还有吧( •̀ ω •́ )y"]}</script>
+    <script defer src="/lib/subtitle_typing.js"></script><script>
+document.addEventListener("DOMContentLoaded", function() {
+  const more = document.getElementById('more');
+  const metaItem = document.querySelector('.post-meta-item-text'); // 定位目标元素
+  if (!more || !metaItem) return;
+
+  const metaRect = metaItem.getBoundingClientRect();
+  const scrollTop = window.scrollY || window.pageYOffset;
+  const metaBottom = metaRect.bottom + scrollTop; // 元素底部相对于文档顶部
+
+  let prev = more.previousElementSibling;
+  const ps = [];
+
+  while (prev) {
+    if (prev.tagName.toLowerCase() === 'p') {
+      ps.unshift(prev);
+    }
+    prev = prev.previousElementSibling;
+  }
+
+  ps.forEach((p, index) => {
+    p.style.color = '#888888';
+    p.style.fontSize = '0.9rem';
+    p.style.textAlign = 'center';
+    p.style.lineHeight = '1.4';
+
+    if (index === 0) {
+      // 设置第一个 <p> 的 marginTop，使其紧贴 .post-meta-item-text 底部
+      const pRect = p.getBoundingClientRect();
+      const pCurrentTop = pRect.top + scrollTop;
+      const marginTop = metaBottom - pCurrentTop;
+      p.style.marginTop = `${marginTop}*1.1px`;
+    }
+
+    if (index === ps.length - 1) {
+      p.style.marginBottom = '90px';
+    }
+  });
+});
+</script>
+
+
+<!-- 使用自定义标签，chars属性可以写要循环的内容
+<an_loadingn chars="123456" interval="500"></an_loading>
+-->
+<script>
+class CharAnimation extends HTMLElement {
+  constructor() {
+    super();
+    this.index = 0;
+    this.shadow = this.attachShadow({mode: 'open'});
+    this.display = document.createElement('span');
+    this.shadow.appendChild(this.display);
+  }
+
+  connectedCallback() {
+    this.chars = this.getAttribute('chars') || '.';
+    this.interval = parseInt(this.getAttribute('interval')) || 500;
+
+    this.timer = setInterval(() => {
+      this.index++;
+      if(this.index > this.chars.length) this.index = 1;
+      this.display.textContent = this.chars.slice(0, this.index);
+    }, this.interval);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.timer);
+  }
+}
+
+customElements.define('an_loading', CharAnimation);
+</script>
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+    <script src="/js/hexo_resize_image.js"></script>
+    <script src="/js/leaf-background.js"></script>
+  <!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="幽篁里" type="application/atom+xml">
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">幽篁里</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Quidquid latine dictum sit, altum sonatur.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">50</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">18</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">26</span></a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">提示工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">选择模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B-1"><span class="nav-number">1.2.</span> <span class="nav-text">提示工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E8%A7%92%E8%89%B2%E4%B8%8E%E6%8C%87%E4%BB%A4%E9%81%B5%E5%BE%AA"><span class="nav-number">1.3.</span> <span class="nav-text">消息角色与指令遵循</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E5%A4%8D%E7%94%A8%E6%8F%90%E7%A4%BA"><span class="nav-number">1.4.</span> <span class="nav-text">可复用提示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Markdown%E5%92%8CXML%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%B6%88%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">使用Markdown和XML格式化消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E6%8F%90%E7%A4%BA%E7%BC%93%E5%AD%98%E8%8A%82%E7%9C%81%E6%88%90%E6%9C%AC%E5%92%8C%E5%BB%B6%E8%BF%9F"><span class="nav-number">1.5.0.1.</span> <span class="nav-text">通过提示缓存节省成本和延迟</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%91%E6%A0%B7%E6%9C%AC%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.6.</span> <span class="nav-text">少样本学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E5%90%AB%E7%9B%B8%E5%85%B3%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.7.</span> <span class="nav-text">包含相关上下文信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%92%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AA%97%E5%8F%A3"><span class="nav-number">1.7.0.1.</span> <span class="nav-text">规划上下文窗口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%BD%93%E5%89%8D%E7%9A%84GPT-5%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%8F%90%E7%A4%BA"><span class="nav-number">1.8.</span> <span class="nav-text">为当前的GPT-5系列模型设计提示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E6%96%B0GPT-5%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8F%90%E7%A4%BA%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.8.1.</span> <span class="nav-text">最新GPT-5系列模型的提示最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">编程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.8.1.2.</span> <span class="nav-text">前端工程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.8.1.3.</span> <span class="nav-text">代理任务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%8F%90%E7%A4%BA"><span class="nav-number">1.9.</span> <span class="nav-text">为推理模型设计提示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.10.</span> <span class="nav-text">后续步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90"><span class="nav-number">1.11.</span> <span class="nav-text">其他资源</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LanOoO"
+      src="/images/AAAASpring.jpg">
+  <p class="site-author-name" itemprop="name">LanOoO</p>
+  <div class="site-description" itemprop="description">在这里摊开一小片灵魂</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="mailto:qiulannana@163.com" title="E-Mail → mailto:qiulannana@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://steamcommunity.com/id/lanOoO6979" title="Steam → https:&#x2F;&#x2F;steamcommunity.com&#x2F;id&#x2F;lanOoO6979" rel="noopener me" target="_blank"><i class="fab fa-steam fa-fw"></i>Steam</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://music.163.com/#/user/home?id=2127332042" title="CloudMusic → https:&#x2F;&#x2F;music.163.com&#x2F;#&#x2F;user&#x2F;home?id&#x3D;2127332042" rel="noopener me" target="_blank"><i class="fa fa-music fa-fw"></i>CloudMusic</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://monkeytype.com/profile/LanOuO" title="monkeytype → https:&#x2F;&#x2F;monkeytype.com&#x2F;profile&#x2F;LanOuO" rel="noopener me" target="_blank"><i class="fa fa-kayboard fa-fw"></i>monkeytype</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.lanouo.xyz/O-Prompt-engineering.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/AAAASpring.jpg">
+      <meta itemprop="name" content="LanOoO">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="幽篁里">
+      <meta itemprop="description" content="在这里摊开一小片灵魂">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GPT的最佳实践-openai | 幽篁里">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GPT的最佳实践-openai
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-29 10:12:00 / 修改时间：10:18:07" itemprop="dateCreated datePublished" datetime="2026-05-29T10:12:00+08:00">2026-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/" itemprop="url" rel="index"><span itemprop="name">资源存档</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%B5%84%E6%BA%90%E5%AD%98%E6%A1%A3/%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99/" itemprop="url" rel="index"><span itemprop="name">参考资料</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>本文使用deepseek翻译并存档</p>
+<span id="more"></span>
+<h1 id="提示工程"><a href="#提示工程" class="headerlink" title="提示工程"></a>提示工程</h1><p>使用OpenAI API时，你可以通过<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models">大型语言模型</a>根据提示生成文本，就像使用<a target="_blank" rel="noopener" href="https://chatgpt.com/">ChatGPT</a>一样。模型可以生成几乎任何类型的文本响应——例如代码、数学公式、结构化的JSON数据或类似人类的散文。</p>
+<p>以下是一个使用<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/api-reference/responses">响应式API</a>的简单示例。</p>
+<p>模型生成的内容数组位于响应的<code>output</code>属性中。在这个简单示例中，我们只有一个输出，如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;msg_67b73f697ba4819183a15cc17d011509&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;message&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;output_text&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;在柔和的月光下，独角兽露娜在闪烁星尘的田野中起舞，为每个熟睡的孩子留下梦想的轨迹。&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;annotations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p><strong><code>output</code>数组通常包含多个项目！</strong> 它可以包含工具调用、关于<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a>生成的推理令牌的数据以及其他项目。假设模型的文本输出存在于<code>output[0].content[0].text</code>中是不安全的。</p>
+<p>我们的一些<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/libraries">官方SDK</a>为了方便起见，在模型响应中包含了一个<code>output_text</code>属性，该属性将模型的所有文本输出聚合为单个字符串。这可以作为访问模型文本输出的快捷方式，可能很有用。</p>
+<p>除了纯文本，你还可以让模型以JSON格式返回结构化数据——此功能称为<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/structured-outputs"><strong>结构化输出</strong></a>。</p>
+<h2 id="选择模型"><a href="#选择模型" class="headerlink" title="选择模型"></a>选择模型</h2><p>通过API生成内容时，一个关键选择是使用哪个模型——上述代码示例中的<code>model</code>参数。<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models">你可以在此处找到可用模型的完整列表</a>。以下是选择文本生成模型时需要考虑的几个因素。</p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a></strong> 会生成内部思维链来分析输入提示，擅长理解复杂任务和多步骤规划。但它们通常比GPT模型更慢、更昂贵。</li>
+<li><strong>GPT模型</strong> 快速、成本效益高且高度智能，但需要更明确的指令来说明如何完成任务。</li>
+<li><strong>大型和小型（mini或nano）模型</strong> 在速度、成本和智能性之间提供权衡。大型模型在理解提示和跨领域解决问题方面更有效，而小型模型通常更快、更便宜。</li>
+</ul>
+<p>如果不确定，<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models/gpt-5.5"><code>gpt-5.5</code></a> 为通用文本生成和提示迭代提供了一个强大的默认选择。</p>
+<h2 id="提示工程-1"><a href="#提示工程-1" class="headerlink" title="提示工程"></a>提示工程</h2><p><strong>提示工程</strong> 是为模型编写有效指令的过程，以便模型能够一致地生成满足你要求的内容。</p>
+<p>由于模型生成的内容是非确定性的，通过提示获得所需输出既是艺术也是科学。然而，你可以应用技术和最佳实践来持续获得良好的结果。</p>
+<p>一些提示工程技术适用于所有模型，例如使用消息角色。但不同类型的模型（如推理模型与GPT模型）可能需要不同的提示方式才能产生最佳结果。即使是同一系列中不同快照的模型也可能产生不同的结果。因此，在构建更复杂的应用时，我们强烈建议：</p>
+<ul>
+<li>将你的生产应用固定到特定的<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models">模型快照</a>（例如 <code>gpt-4.1-2025-04-14</code>），以确保行为一致。</li>
+<li>构建<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/evals">评估（evals）</a>来衡量提示的行为，以便在迭代或更改和升级模型版本时监控提示性能。</li>
+</ul>
+<p>现在，让我们探讨一些可用于构建提示的工具和技术。</p>
+<h2 id="消息角色与指令遵循"><a href="#消息角色与指令遵循" class="headerlink" title="消息角色与指令遵循"></a>消息角色与指令遵循</h2><p>你可以使用<code>instructions</code> API参数或<strong>消息角色</strong>，以<a target="_blank" rel="noopener" href="https://model-spec.openai.com/2025-02-12.html#chain_of_command">不同级别的权威</a>向模型提供指令。</p>
+<p><code>instructions</code>参数向模型提供关于其在生成响应时应如何行为的高级指令，包括语气、目标和正确响应的示例。以这种方式提供的任何指令都将优先于<code>input</code>参数中的提示。</p>
+<p><strong>使用指令生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">reasoning</span>: &#123; <span class="attr">effort</span>: <span class="string">&quot;low&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">instructions</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span>,</span><br><span class="line">    <span class="attr">input</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    reasoning=&#123;<span class="string">&quot;effort&quot;</span>: <span class="string">&quot;low&quot;</span>&#125;,</span><br><span class="line">    instructions=<span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span>,</span><br><span class="line">    <span class="built_in">input</span>=<span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&quot;https://api.openai.com/v1/responses&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">    -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">        &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">        &quot;reasoning&quot;: &#123;&quot;effort&quot;: &quot;low&quot;&#125;,</span></span><br><span class="line"><span class="string">        &quot;instructions&quot;: &quot;$&#123;semicolonsDevMsg&#125;&quot;,</span></span><br><span class="line"><span class="string">        &quot;input&quot;: &quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的示例大致相当于在<code>input</code>数组中使用以下输入消息：</p>
+<p><strong>使用不同角色的消息生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">reasoning</span>: &#123; <span class="attr">effort</span>: <span class="string">&quot;low&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">input</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">role</span>: <span class="string">&quot;developer&quot;</span>,</span><br><span class="line">            <span class="attr">content</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">role</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">            <span class="attr">content</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    ],</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    reasoning=&#123;<span class="string">&quot;effort&quot;</span>: <span class="string">&quot;low&quot;</span>&#125;,</span><br><span class="line">    <span class="built_in">input</span>=[</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;developer&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&quot;https://api.openai.com/v1/responses&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">    -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">        &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">        &quot;reasoning&quot;: &#123;&quot;effort&quot;: &quot;low&quot;&#125;,</span></span><br><span class="line"><span class="string">        &quot;input&quot;: [</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;role&quot;: &quot;developer&quot;,</span></span><br><span class="line"><span class="string">                &quot;content&quot;: &quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line"><span class="string">            &#125;,</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;role&quot;: &quot;user&quot;,</span></span><br><span class="line"><span class="string">                &quot;content&quot;: &quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        ]</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>请注意，<code>instructions</code>参数仅适用于当前的响应生成请求。如果你正在使用<code>previous_response_id</code>参数<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/conversation-state">管理对话状态</a>，则先前轮次中使用的<code>instructions</code>将不会存在于上下文中。</p>
+<p><a target="_blank" rel="noopener" href="https://model-spec.openai.com/2025-02-12.html#chain_of_command">OpenAI模型规范</a>描述了我们的模型如何给予不同角色的消息不同级别的优先级。</p>
+<table>
+<thead>
+<tr>
+<th><code>developer</code></th>
+<th><code>user</code></th>
+<th><code>assistant</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>developer</code>消息是由应用程序开发者提供的指令，优先于<code>user</code>消息。</td>
+<td><code>user</code>消息是由最终用户提供的指令，优先级低于<code>developer</code>消息。</td>
+<td>由模型生成的消息具有<code>assistant</code>角色。</td>
+</tr>
+</tbody></table>
+<p>多轮对话可能包含多条这些类型的消息，以及由你和模型提供的其他内容类型。在此处了解有关<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/conversation-state">管理对话状态</a>的更多信息。</p>
+<p>你可以将<code>developer</code>和<code>user</code>消息想象成编程语言中的函数及其参数。</p>
+<ul>
+<li><code>developer</code>消息提供系统的规则和业务逻辑，就像函数定义一样。</li>
+<li><code>user</code>消息提供输入和配置，<code>developer</code>消息指令将应用于这些输入和配置，就像函数的参数一样。</li>
+</ul>
+<h2 id="可复用提示"><a href="#可复用提示" class="headerlink" title="可复用提示"></a>可复用提示</h2><p>在OpenAI仪表板中，你可以开发可复用的<a target="_blank" rel="noopener" href="https://platform.openai.com/chat/edit">提示</a>，并在API请求中使用它们，而不是在代码中指定提示的内容。这样，你可以更轻松地构建和评估提示，并在不更改集成代码的情况下部署改进版的提示。</p>
+<p>工作原理如下：</p>
+<ol>
+<li><strong>创建可复用提示</strong> 在<a target="_blank" rel="noopener" href="https://platform.openai.com/chat/edit">仪表板</a>中，使用占位符如 <code>&#123;&#123;customer_name&#125;&#125;</code>。</li>
+<li><strong>在API请求中使用提示</strong> 使用 <code>prompt</code> 参数。<code>prompt</code> 参数对象有三个可配置的属性：<ul>
+<li><code>id</code> — 提示的唯一标识符，在仪表板中找到。</li>
+<li><code>version</code> — 提示的特定版本（默认为仪表板中指定的“当前”版本）。</li>
+<li><code>variables</code> — 要替换提示中变量的值映射。替换值可以是字符串，也可以是其他响应输入消息类型，如 <code>input_image</code> 或 <code>input_file</code>。<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/api-reference/responses/create">请参阅完整的API参考</a>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>使用提示模板生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">prompt</span>: &#123;</span><br><span class="line">        <span class="attr">id</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="attr">version</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">        <span class="attr">variables</span>: &#123;</span><br><span class="line">            <span class="attr">customer_name</span>: <span class="string">&quot;Jane Doe&quot;</span>,</span><br><span class="line">            <span class="attr">product</span>: <span class="string">&quot;40oz juice box&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    prompt=&#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="string">&quot;version&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;variables&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;customer_name&quot;</span>: <span class="string">&quot;Jane Doe&quot;</span>,</span><br><span class="line">            <span class="string">&quot;product&quot;</span>: <span class="string">&quot;40oz juice box&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;prompt&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;id&quot;: &quot;pmpt_abc123&quot;,</span></span><br><span class="line"><span class="string">      &quot;version&quot;: &quot;2&quot;,</span></span><br><span class="line"><span class="string">      &quot;variables&quot;: &#123;</span></span><br><span class="line"><span class="string">        &quot;customer_name&quot;: &quot;Jane Doe&quot;,</span></span><br><span class="line"><span class="string">        &quot;product&quot;: &quot;40oz juice box&quot;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>包含文件输入的提示模板</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上传一个PDF，我们将在提示变量中引用它</span></span><br><span class="line"><span class="keyword">const</span> file = <span class="keyword">await</span> client.<span class="property">files</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">file</span>: fs.<span class="title function_">createReadStream</span>(<span class="string">&quot;draconomicon.pdf&quot;</span>),</span><br><span class="line">    <span class="attr">purpose</span>: <span class="string">&quot;user_data&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">prompt</span>: &#123;</span><br><span class="line">        <span class="attr">id</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="attr">variables</span>: &#123;</span><br><span class="line">            <span class="attr">topic</span>: <span class="string">&quot;Dragons&quot;</span>,</span><br><span class="line">            <span class="attr">reference_pdf</span>: &#123;</span><br><span class="line">                <span class="attr">type</span>: <span class="string">&quot;input_file&quot;</span>,</span><br><span class="line">                <span class="attr">file_id</span>: file.<span class="property">id</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> openai, pathlib</span><br><span class="line"></span><br><span class="line">client = openai.OpenAI()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个PDF，我们将在变量中引用它</span></span><br><span class="line">file = client.files.create(</span><br><span class="line">    file=<span class="built_in">open</span>(<span class="string">&quot;draconomicon.pdf&quot;</span>, <span class="string">&quot;rb&quot;</span>),</span><br><span class="line">    purpose=<span class="string">&quot;user_data&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    prompt=&#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="string">&quot;variables&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;topic&quot;</span>: <span class="string">&quot;Dragons&quot;</span>,</span><br><span class="line">            <span class="string">&quot;reference_pdf&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;input_file&quot;</span>,</span><br><span class="line">                <span class="string">&quot;file_id&quot;</span>: file.<span class="built_in">id</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设你已经上传了PDF并获得了FILE_ID</span></span><br><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;prompt&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;id&quot;: &quot;pmpt_abc123&quot;,</span></span><br><span class="line"><span class="string">      &quot;variables&quot;: &#123;</span></span><br><span class="line"><span class="string">        &quot;topic&quot;: &quot;Dragons&quot;,</span></span><br><span class="line"><span class="string">        &quot;reference_pdf&quot;: &#123;</span></span><br><span class="line"><span class="string">          &quot;type&quot;: &quot;input_file&quot;,</span></span><br><span class="line"><span class="string">          &quot;file_id&quot;: &quot;file-abc123&quot;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Markdown和XML格式化消息"><a href="#使用Markdown和XML格式化消息" class="headerlink" title="使用Markdown和XML格式化消息"></a>使用Markdown和XML格式化消息</h2><p>在编写<code>developer</code>和<code>user</code>消息时，你可以结合使用<a target="_blank" rel="noopener" href="https://commonmark.org/help/">Markdown</a>格式和<a target="_blank" rel="noopener" href="https://www.w3.org/TR/xml/">XML标签</a>，帮助模型理解提示和上下文数据的逻辑边界。</p>
+<p>Markdown标题和列表有助于标记提示的不同部分，并向模型传达层次结构。它们也可能在开发过程中使提示更易读。XML标签有助于界定一段内容（例如用作参考的支持文档）的开始和结束位置。XML属性还可用于定义提示中内容的元数据，这些元数据可以被你的指令引用。</p>
+<p>通常，一条<code>developer</code>消息将包含以下部分，通常按此顺序（但确切的最佳内容和顺序可能因你使用的模型而异）：</p>
+<ul>
+<li><strong>身份：</strong> 描述助手的目的、沟通风格和高级目标。</li>
+<li><strong>指令：</strong> 为模型提供关于如何生成所需响应的指导。它应遵循哪些规则？模型应该做什么，绝对不应该做什么？此部分可能包含与你的用例相关的许多子部分，例如模型应如何<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/function-calling">调用自定义函数</a>。</li>
+<li><strong>示例：</strong> 提供可能的输入示例，以及模型所需的输出。</li>
+<li><strong>上下文：</strong> 为模型提供生成响应可能需要的任何额外信息，例如训练数据之外的私密&#x2F;专有数据，或你知道将特别相关的任何其他数据。此内容通常最好放在提示的末尾附近，因为你可能为不同的生成请求包含不同的上下文。</li>
+</ul>
+<p>以下是一个使用Markdown和XML标签构建具有不同部分和支持示例的<code>developer</code>消息的示例。</p>
+<p><strong>通过API发送提示以生成代码</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs/promises&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> instructions = <span class="keyword">await</span> fs.<span class="title function_">readFile</span>(<span class="string">&quot;prompt.txt&quot;</span>, <span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    instructions,</span><br><span class="line">    <span class="attr">input</span>: <span class="string">&quot;How would I declare a variable for a last name?&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;prompt.txt&quot;</span>, <span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    instructions = f.read()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    instructions=instructions,</span><br><span class="line">    <span class="built_in">input</span>=<span class="string">&quot;How would I declare a variable for a last name?&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;instructions&quot;: &quot;&#x27;</span><span class="string">&quot;<span class="subst">$(&lt; prompt.txt)</span>&quot;</span><span class="string">&#x27;&quot;,</span></span><br><span class="line"><span class="string">    &quot;input&quot;: &quot;How would I declare a variable for a last name?&quot;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="通过提示缓存节省成本和延迟"><a href="#通过提示缓存节省成本和延迟" class="headerlink" title="通过提示缓存节省成本和延迟"></a>通过提示缓存节省成本和延迟</h4><p>在构建消息时，你应该尝试将期望在API请求中反复使用的内容放在提示的<strong>开头</strong>，<strong>以及</strong>放在JSON请求体中传递给<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/api-reference/chat">聊天补全</a>或<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/api-reference/responses">响应式API</a>的最早的API参数中。这可以使你通过<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-caching">提示缓存</a>获得最大的成本和延迟节省。</p>
+<h2 id="少样本学习"><a href="#少样本学习" class="headerlink" title="少样本学习"></a>少样本学习</h2><p>少样本学习允许你通过在提示中包含少量输入&#x2F;输出示例来引导大型语言模型执行新任务，而不是对模型进行<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/model-optimization">微调</a>。模型会隐式地从这些示例中“学习”模式，并将其应用于提示。提供示例时，尝试展示各种可能的输入及其所需的输出。</p>
+<p>通常，你会将示例作为API请求中<code>developer</code>消息的一部分。以下是一个<code>developer</code>消息示例，其中包含展示模型如何将客户服务评论分类为正面或负面的示例。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"># 身份</span><br><span class="line"></span><br><span class="line">你是一个乐于助人的助手，负责将简短的产品评论标记为正面、负面或中性。</span><br><span class="line"></span><br><span class="line"># 指令</span><br><span class="line"></span><br><span class="line">* 你的响应中只输出一个单词，没有额外的格式或评论。</span><br><span class="line">* 根据你收到的产品评论的情感，你的响应只能是“正面”、“负面”或“中性”中的一个词。</span><br><span class="line"></span><br><span class="line"># 示例</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-1&quot;&gt;</span><br><span class="line">我绝对喜欢这款耳机——音质太棒了！</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-1&quot;&gt;</span><br><span class="line">正面</span><br><span class="line">&lt;/assistant_response&gt;</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-2&quot;&gt;</span><br><span class="line">电池续航还可以，但耳垫感觉廉价。</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-2&quot;&gt;</span><br><span class="line">中性</span><br><span class="line">&lt;/assistant_response&gt;</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-3&quot;&gt;</span><br><span class="line">糟糕的客户服务，我再也不会从他们那里买东西了。</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-3&quot;&gt;</span><br><span class="line">负面</span><br><span class="line">&lt;/assistant_response&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="包含相关上下文信息"><a href="#包含相关上下文信息" class="headerlink" title="包含相关上下文信息"></a>包含相关上下文信息</h2><p>在你给模型的提示中包含模型可以用来生成响应的额外上下文信息通常很有用。这样做有几个常见原因：</p>
+<ul>
+<li>让模型访问专有数据，或模型训练数据集之外的任何其他数据。</li>
+<li>将模型的响应限制在你已确定最有益的一组特定资源。</li>
+</ul>
+<p>将额外相关上下文添加到模型生成请求中的技术有时称为<strong>检索增强生成（RAG）</strong>。你可以通过多种方式向提示中添加额外上下文，例如查询向量数据库并将返回的文本包含到提示中，或者使用OpenAI内置的<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/tools-file-search">文件搜索工具</a>根据上传的文档生成内容。</p>
+<h4 id="规划上下文窗口"><a href="#规划上下文窗口" class="headerlink" title="规划上下文窗口"></a>规划上下文窗口</h4><p>模型在生成请求期间考虑的上下文只能处理有限的数据量。这个内存限制称为<strong>上下文窗口</strong>，以<a target="_blank" rel="noopener" href="https://blogs.nvidia.com/blog/ai-tokens-explained">tokens（令牌）</a>（你传入的数据块，从文本到图像）来定义。</p>
+<p>模型的上下文窗口大小各不相同，从低端的10万令牌到较新GPT-4.1模型的100万令牌。<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models">请参阅模型文档</a>了解每个模型的具体上下文窗口大小。</p>
+<h2 id="为当前的GPT-5系列模型设计提示"><a href="#为当前的GPT-5系列模型设计提示" class="headerlink" title="为当前的GPT-5系列模型设计提示"></a>为当前的GPT-5系列模型设计提示</h2><p>像<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models/gpt-5.5"><code>gpt-5.5</code></a>这样的GPT模型受益于精确的指令，这些指令在提示中明确提供了完成任务所需的逻辑和数据。为了充分利用最新的GPT-5系列模型，请从当前的提示指南开始。</p>
+<a href="/api/docs/guides/prompt-guidance">
+  通过当前指南、实际示例和迁移说明，了解如何充分利用最新的GPT-5系列模型进行提示。
+</a>
+
+<h3 id="最新GPT-5系列模型的提示最佳实践"><a href="#最新GPT-5系列模型的提示最佳实践" class="headerlink" title="最新GPT-5系列模型的提示最佳实践"></a>最新GPT-5系列模型的提示最佳实践</h3><p>有关完整的当前处理方法，请使用<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。以下实用提醒仍然适用。</p>
+<h4 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h4><p>在提示<code>gpt-5.5</code>进行编程任务时，遵循几个最佳实践最为有效：定义代理的角色，通过示例强制结构化工具使用，要求进行彻底的测试以确保正确性，并设置Markdown标准以产生清晰的输出。</p>
+<p><strong>明确的角色和工作流程指导</strong><br>将模型构建为具有明确职责的软件工程代理。为使用<code>functions.run</code>等工具执行代码任务提供清晰的指令，并指定何时不使用某些模式——例如，除非必要，否则避免交互式执行。</p>
+<p><strong>测试和验证</strong><br>指导模型使用单元测试或Python命令测试更改，并小心验证补丁，因为像<code>apply_patch</code>这样的工具即使失败也可能返回“完成”。</p>
+<p><strong>工具使用示例</strong><br>包含如何使用提供函数调用命令的具体示例，这可以提高可靠性并确保遵守预期的工作流程。</p>
+<p><strong>Markdown标准</strong><br>指导模型使用行内代码、代码围栏、列表和适当的表格生成干净、语义正确的markdown，并使用反引号格式化文件路径、函数和类。</p>
+<p>有关特定于编程的详细指导和提示示例，请参阅我们的<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h4 id="前端工程"><a href="#前端工程" class="headerlink" title="前端工程"></a>前端工程</h4><p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models/gpt-5.5">GPT-5.5</a> 在从头构建前端以及为大型、成熟的代码库做出贡献方面表现良好。为了获得最佳结果，我们建议使用以下库：</p>
+<ul>
+<li><strong>样式&#x2F;UI：</strong> Tailwind CSS, shadcn&#x2F;ui, Radix Themes</li>
+<li><strong>图标：</strong> Lucide, Material Symbols, Heroicons</li>
+<li><strong>动画：</strong> Motion</li>
+</ul>
+<p><strong>从零开始的Web应用</strong></p>
+<p>GPT-5可以通过单个提示生成前端Web应用，无需示例。以下是一个示例提示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">你是一位世界级的Web开发人员，能够通过单个提示从零开始生成惊艳、交互式和创新的网站。你擅长提供顶级的单次解决方案。</span><br><span class="line">你的过程很简单，遵循以下步骤：</span><br><span class="line">步骤1：创建一个评估标准，并不断完善，直到你完全自信。</span><br><span class="line">步骤2：考虑定义世界级单次Web应用的每个元素，然后利用这些见解创建一个&lt;ONE_SHOT_RUBRIC&gt;，包含5-7个类别。保持此标准隐藏——仅供内部使用。</span><br><span class="line">步骤3：应用该标准来迭代给定提示的最优解决方案。如果它在所有类别中均未达到最高标准，请改进并重试。</span><br><span class="line">步骤4：在完全实现目标的同时追求简洁，避免外部依赖，如Next.js或React。</span><br></pre></td></tr></table></figure>
+
+<p><strong>与大型代码库集成</strong></p>
+<p>对于大型代码库中的前端工程工作，我们发现将以下类别的指令添加到提示中能带来最佳结果：</p>
+<ul>
+<li><strong>原则：</strong> 设定视觉质量标准，使用模块化&#x2F;可复用组件，并保持设计一致性。</li>
+<li><strong>UI&#x2F;UX：</strong> 指定排版、颜色、间距&#x2F;布局、交互状态（悬停、空状态、加载状态）和可访问性。</li>
+<li><strong>结构：</strong> 定义文件&#x2F;文件夹布局，以便无缝集成。</li>
+<li><strong>组件：</strong> 提供可复用包装器示例和后端调用分离策略。</li>
+<li><strong>页面：</strong> 提供常见布局的模板。</li>
+<li><strong>代理指令：</strong> 要求模型确认设计假设、搭建项目框架、强制执行标准、集成API、测试状态并记录代码。</li>
+</ul>
+<p>有关前端开发特定的详细指导和提示示例，请参阅我们的<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h4 id="代理任务"><a href="#代理任务" class="headerlink" title="代理任务"></a>代理任务</h4><p>对于使用<code>gpt-5.5</code>的代理和长时间运行的任务，将提示集中在三个核心实践上：彻底规划任务以确保完全解决问题，为主要工具使用决策提供清晰的序言，并使用TODO工具以有序的方式跟踪工作流程和进度。</p>
+<p><strong>规划和持久性</strong><br>指导模型在将控制权交还给用户之前完全解决查询问题，将其分解为子任务，并在每次工具调用后进行反思以确认完成情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">请记住，你是一个代理——在结束你的回合并将控制权交还给用户之前，请继续直到用户的查询完全解决。将用户的查询分解为所有必需的子请求，并确认每个子请求都已完成。不要只完成部分请求就停止。只有在确定问题已解决时才终止你的回合。你必须准备好回答多个问题，并且只有在用户确认他们完成后才能结束调用。</span><br><span class="line"></span><br><span class="line">在后续进行函数调用之前，你必须根据工作流程步骤进行广泛的规划，并在每次函数调用后进行广泛的反思，确保用户的查询以及相关的子请求得到完全解决。</span><br></pre></td></tr></table></figure>
+
+<p><strong>透明的序言</strong></p>
+<p>要求模型解释为什么要调用工具，但仅在关键步骤时进行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在调用工具之前，解释你为什么要调用它。</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用标准和TODO进行进度跟踪</strong></p>
+<p>使用TODO列表工具或标准来强制执行结构化规划并避免遗漏步骤。</p>
+<p>有关构建代理的详细指导和提示示例，请参阅<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h2 id="为推理模型设计提示"><a href="#为推理模型设计提示" class="headerlink" title="为推理模型设计提示"></a>为推理模型设计提示</h2><p>在提示<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a>与提示GPT模型时，需要考虑一些差异。一般来说，推理模型在仅提供高级指导的任务上会提供更好的结果。这与GPT模型不同，后者受益于非常精确的指令。</p>
+<p>你可以这样理解推理模型和GPT模型之间的区别：</p>
+<ul>
+<li>推理模型就像一位资深同事。你可以给他们一个要实现的目标，并相信他们会自行解决细节问题。</li>
+<li>GPT模型就像一位初级同事。他们在收到明确的指令以创建特定输出时表现最佳。</li>
+</ul>
+<p>有关使用推理模型的最佳实践的更多信息，请<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">参考本指南</a>。</p>
+<h2 id="后续步骤"><a href="#后续步骤" class="headerlink" title="后续步骤"></a>后续步骤</h2><p>既然你已经了解了文本输入和输出的基础知识，你可能希望接下来查看以下资源之一：</p>
+<p><a target="_blank" rel="noopener" href="https://platform.openai.com/chat/edit">使用Playground开发和迭代提示。</a></p>
+<p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/structured-outputs">确保模型输出的JSON数据符合JSON模式。</a></p>
+<p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/api-reference/responses">在API参考中查看文本生成的所有选项。</a></p>
+<h2 id="其他资源"><a href="#其他资源" class="headerlink" title="其他资源"></a>其他资源</h2><p>如需更多灵感，请访问<a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook">OpenAI Cookbook</a>，其中包含示例代码，并链接到第三方资源，例如：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/related_resources#prompting-libraries--tools">提示库与工具</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/related_resources#prompting-guides">提示指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/related_resources#video-courses">视频课程</a></li>
+<li><a target="_blank" rel="noopener" href="https://developers.openai.com/cookbook/related_resources#papers-on-advanced-prompting-to-improve-reasoning">关于高级提示以改进推理的论文</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%82%E8%80%83/" rel="tag"><i class="fa fa-tag"></i> 参考</a>
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"><i class="fa fa-tag"></i> 大模型</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/hdfs_ha_start.html" rel="prev" title="Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程">
+                  <i class="fa fa-angle-left"></i> Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fas fa-star"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LanOoO</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">90k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:21</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

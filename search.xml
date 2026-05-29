@@ -33,8 +33,8 @@
       </tags>
   </entry>
   <entry>
-    <title>Flutter安装报错记录</title>
-    <url>/errorlist_flutter.html</url>
+    <title>Git 学习——实践部分</title>
+    <url>/git_0.html</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
     .inline-note {
       display: inline-block;
@@ -56,70 +56,17 @@
       box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
     }
 </style>
-<p>flutter安装报错存档</p>
 <span id="more"></span>
-
-<h1 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h1><p>首先查看下报错信息：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">PS C:\Users\LJY&gt; flutter doctor</span><br><span class="line">Doctor summary (to see all details, run flutter doctor -v):</span><br><span class="line">[✓] Flutter (Channel stable, 3.38.3, on Microsoft Windows [版本 10.0.26100.4946], locale zh-CN)</span><br><span class="line">[✓] Windows Version (11 家庭中文版 64-bit, 24H2, 2009)</span><br><span class="line">[✓] Android toolchain - develop for Android devices (Android SDK version 36.1.0)</span><br><span class="line">[✓] Chrome - develop for the web</span><br><span class="line">[✓] Visual Studio - develop Windows apps (Visual Studio 生成工具 2022 17.14.16)</span><br><span class="line">[✓] Connected device (3 available)</span><br><span class="line">[!] Network resources</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://pub.dev/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://storage.googleapis.com/&quot;: Connection terminated during</span><br><span class="line">      handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://maven.google.com/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://cocoapods.org/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://github.com/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br></pre></td></tr></table></figure>
-
-<p>报错信息为：连接不上</p>
-<ul>
-<li><p>pub.dev</p>
-</li>
-<li><p>storage.googleapis.com</p>
-</li>
-<li><p>maven.google.com</p>
-</li>
-<li><p>cocoapods.org</p>
-</li>
-<li><p>github.com</p>
-</li>
-</ul>
-<p>环境为：Win11+Clash Verge全局+系统代理</p>
-<hr>
-<h1 id="解决流程"><a href="#解决流程" class="headerlink" title="解决流程"></a>解决流程</h1><p>首先使用浏览器查看，发现以上页面都能打开。</p>
-<p>感觉可能是终端没走代理的原因，就把代理调整为TUN模式</p>
-<p>使用终端curl github，成功返回页面</p>
-<p>使用终端curl <a href="https://maven.google.com/com/">https://maven.google.com/com/</a><br>→ 404 That’s an error.（但成功返回页面）</p>
-<p>AI的解释为</p>
-<blockquote>
-<p>因为 <strong>Flutter&#x2F;Gradle 访问 maven.google.com 不是访问 &#x2F;com&#x2F;</strong><br> 它访问的是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">https://maven.google.com/master-index.xml</span><br><span class="line">https://maven.google.com/com/android/tools/build/group-index.xml</span><br></pre></td></tr></table></figure>
-
-<p>并且这些文件需要：</p>
-<ul>
-<li><strong>TLS 1.2 &#x2F; TLS 1.3</strong></li>
-<li><strong>正确的 CA 证书链</strong></li>
-<li><strong>完整的网络握手</strong></li>
-</ul>
-<p>你之前出现的错误：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Connection terminated during handshake</span><br></pre></td></tr></table></figure>
-
-<p>这说明 <strong>TLS 握手阶段就失败了</strong><br> 而 curl 能成功 → 说明：</p>
-<ul>
-<li>你使用的 curl 内置证书是 OK 的</li>
-<li><strong>Java &#x2F; Flutter &#x2F; Dart 使用的证书链不 OK</strong></li>
-</ul>
-<p>❗ <strong>这类问题绝大多数都是 Windows 环境里的 CA 证书缺失&#x2F;损坏 或 代理&#x2F;杀软注入了假证书（MITM）</strong></p>
-</blockquote>
-<p>然后又去检查CA证书</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">PS C:\Users\LJY&gt; certutil -verifystore -user root</span><br><span class="line">root &quot;受信任的根证书颁发机构&quot;</span><br><span class="line">================ 证书 0 ================</span><br><span class="line">序列号: 0aa8d1ed03648306256b92500fd33b224a44f0ea</span><br><span class="line">颁发者: C=CN, O=堡塔, CN=堡塔</span><br><span class="line"> NotBefore: 2023/12/7 16:01</span><br><span class="line"> NotAfter: 2033/12/4 16:01</span><br><span class="line">使用者: C=CN, O=堡塔, CN=堡塔</span><br><span class="line">签名与公钥匹配</span><br><span class="line">根证书: 使用者与颁发者匹配</span><br><span class="line">证书哈希(sha1): 66f8b18f84b329d2aef25446d4e6c3dec0103a95</span><br><span class="line">没有密钥提供程序信息</span><br><span class="line">找不到解密的证书和私钥。</span><br><span class="line">已验证的颁发策略: 全部</span><br><span class="line">已验证的应用程序策略: 全部</span><br><span class="line">证书有效</span><br><span class="line">CertUtil: -verifystore 命令成功完成。</span><br></pre></td></tr></table></figure>
-
-<p>我看到了堡塔……然后把堡塔的证书删掉再次尝试，发现成功</p>
-<p>结束</p>
-<blockquote>
-<p>早知道就不拿电脑瞎折腾了，当初想试一下win安装堡塔来着QAQ</p>
-</blockquote>
-]]></content>
+<p>git init 初始化<br>git add .  添加所有文件到Git管理<br>git config –global user.name &lt;此处输入你的GitHub用户名&gt;<br>git config –global user.email &lt;此处输入绑定的邮箱地址&gt;<br>git commit -m “my first commit” 提交并注释</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将本地仓库关联到远程仓库 origin，&lt;这里填入第2步中看到的远程仓库地址&gt;</span></span><br><span class="line">git remote add origin &lt;远程仓库地址&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从远程 master 分支拉取最新代码并在本地进行 rebase，保证提交历史整洁</span></span><br><span class="line">git pull --rebase origin master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将本地 master 分支的提交推送到远程 origin 仓库，并设置 upstream（后续可以直接 git push）</span></span><br><span class="line">git push -u origin master</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>解决方案</category>
-        <category>系统问题</category>
+        <category>学习记录</category>
+        <category>编程语言</category>
       </categories>
       <tags>
-        <tag>flutter</tag>
-        <tag>error</tag>
-        <tag>安装配置</tag>
-        <tag>错误解决</tag>
+        <tag>git</tag>
+        <tag>版本控制</tag>
+        <tag>实践</tag>
       </tags>
   </entry>
   <entry>
@@ -205,89 +152,197 @@
       </tags>
   </entry>
   <entry>
-    <title>Git 学习——基础篇</title>
-    <url>/git_1.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>关于git的学习记录——基础篇 oio</p>
-<style>
-    .inline-note {
-      display: inline-block;
-      background-color: #fffbe6;
-      color: #333;
-      border-left: 4px solid #f7c948;
-      padding: 0.2em 0.6em;
-      margin: 0 0.2em;
-      font-size: 0.95em;
-      border-radius: 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      font-style: italic;
-      cursor: help;
-      transition: all 0.2s ease;
-    }
-
-    .inline-note:hover {
-      background-color: #fff3bf;
-      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
-    }
-</style>
+    <title>GPT的最佳实践-openai</title>
+    <url>/O-Prompt-engineering.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>本文使用deepseek翻译并存档</p>
 <span id="more"></span>
+<h1 id="提示工程"><a href="#提示工程" class="headerlink" title="提示工程"></a>提示工程</h1><p>使用OpenAI API时，你可以通过<a href="https://developers.openai.com/api/docs/models">大型语言模型</a>根据提示生成文本，就像使用<a href="https://chatgpt.com/">ChatGPT</a>一样。模型可以生成几乎任何类型的文本响应——例如代码、数学公式、结构化的JSON数据或类似人类的散文。</p>
+<p>以下是一个使用<a href="https://developers.openai.com/api/docs/api-reference/responses">响应式API</a>的简单示例。</p>
+<p>模型生成的内容数组位于响应的<code>output</code>属性中。在这个简单示例中，我们只有一个输出，如下所示：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;msg_67b73f697ba4819183a15cc17d011509&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;message&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;output_text&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;在柔和的月光下，独角兽露娜在闪烁星尘的田野中起舞，为每个熟睡的孩子留下梦想的轨迹。&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;annotations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
 
-<blockquote>
-<p>学习网站：<a href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git Branching</a></p>
-</blockquote>
-<p>Git 希望提交记录尽可能地轻量，因此在你每次进行提交时，它并不会盲目地复制整个目录。条件允许的情况下，它会将当前版本与仓库中的上一个版本进行对比，并把所有的差异打包到一起作为一个提交记录。</p>
-<h1 id="Git-主要命令"><a href="#Git-主要命令" class="headerlink" title="Git 主要命令"></a>Git 主要命令</h1><p><code>Git Commit</code>：提交新记录，添加新节点</p>
-<p><code>Git Branch &lt;name&gt;</code>：基于这个提交及他所有的parent新建分支<em>仅新建分支</em></p>
-<blockquote>
-<p><code>main*</code>代表你当前在main分支下</p>
-</blockquote>
-<p><code>git checkout &lt;name&gt;</code>：切换分支</p>
-<blockquote>
-<p>创建一个新的分支同时切换到新创建的分支的话，可以通过 <code>git checkout -b &lt;your-branch-name&gt;</code></p>
-<blockquote>
-<p><em>新版本使用</em><code>git</code> <code>switch</code> [<em><options></em>] [<code>--no-guess</code>] <em><branch></em></p>
-</blockquote>
-</blockquote>
-<p><code>git merge &lt;your-branch-name&gt;</code> 合并分支<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202511181543273.png?40l" alt="git merge"></p>
-<p><code>git rebase &lt;your-branch-name&gt; [your-rebase-name]</code>线性合并分支<br>Rebase 实际上就是取出一系列的提交记录，“复制”它们，然后在另外一个地方逐个的放下去。<br>Rebase 的优势就是可以创造更线性的提交历史。<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202511181548515.png?40l" alt="git rebase"></p>
-<hr>
-<h1 id="Git-特性"><a href="#Git-特性" class="headerlink" title="Git 特性"></a>Git 特性</h1><h2 id="关于HEAD变量"><a href="#关于HEAD变量" class="headerlink" title="关于HEAD变量:"></a>关于<code>HEAD</code>变量:</h2><p>通过<code>git chekout &lt;name&gt;</code>命令可以切换<code>HEAD</code>的指向</p>
-<blockquote>
-<p> <em>可以<code>HEAD</code>→<code>main</code> →<code>C4</code>（<code>main</code>→<code>C4</code>）</em><br><em>也可以<code>HEAD</code>→<code>C4</code></em></p>
-</blockquote>
-<h2 id="相对引用——"><a href="#相对引用——" class="headerlink" title="相对引用——^,~"></a>相对引用——<code>^</code>,<code>~</code></h2><p><code>git log</code> 查看提交记录的哈希值</p>
-<p>其哈希值可以只输入前几个字母进行匹配<br>但是这样太麻烦了</p>
-<p><strong>^</strong>: 使用 <code>^</code> 向上移动 1 个提交记录 (父节点，且可叠用。<code>HEAD^</code>,<code>main^^</code>)<br><span class = "inline-note" title ="小提示"><br>当<code>^</code>后面加数字时，表示的是移动到他的第几个<code>parent</code>（当我们使用<code>git merge</code>命令时可能会有一个以上的parent）<br></span><br><strong>~</strong>: 使用 <code>~&lt;num&gt;</code> 向上移动多个提交记录，如 <code>~3</code>,<code>HEAD~3</code></p>
-<p>两个符号可以链式操作，例如<code>git checkout HEAD~^2~2</code><br>结合之前的命令实用：<br><strong><code>git branch -f main HEAD~3</code>：将 main 分支强制指向 HEAD 的第 3 级 parent 提交。</strong></p>
-<h2 id="撤销变更-——-git-reset和git-revert"><a href="#撤销变更-——-git-reset和git-revert" class="headerlink" title="撤销变更 —— git reset和git revert"></a>撤销变更 —— <code>git reset</code>和<code>git revert</code></h2><p><code>git reset &lt;参数&gt;</code><br>在reset后， 撤销部分所做的变更还在，但是处于未加入暂存区状态。<strong>本地常用</strong><br><code>git revert &lt;参数&gt;</code><br>把撤销之前的部分作为新分支提交<strong>远程常用</strong></p>
-<hr>
-<h1 id="整理提交记录"><a href="#整理提交记录" class="headerlink" title="整理提交记录"></a>整理提交记录</h1><h2 id="复制git-cherry-pick"><a href="#复制git-cherry-pick" class="headerlink" title="复制git cherry-pick"></a>复制<code>git cherry-pick</code></h2><p><code>git cherry-pick &lt;提交号&gt;...</code><br>将一些提交<strong>复制</strong>到当前所在的位置（<code>HEAD</code>）下面</p>
-<h2 id="交互式的-rebase"><a href="#交互式的-rebase" class="headerlink" title="交互式的 rebase"></a>交互式的 rebase</h2><p><code>git rebase -i HEAD~4</code><br>会有一个交互式的页面供你进行<strong>排序、删除、合并</strong><br>在你完成后，会将处理好的分支放在当前分支下</p>
-<h2 id="只取一个提交记录（实战结合）"><a href="#只取一个提交记录（实战结合）" class="headerlink" title="只取一个提交记录（实战结合）"></a>只取一个提交记录（实战结合）</h2><p>通过以上两个命令把修改bug中最后解决bug的提交记录复制或移动到main分支下</p>
-<h1 id="提交的技巧"><a href="#提交的技巧" class="headerlink" title="提交的技巧"></a>提交的技巧</h1><blockquote>
-<p>当你希望对之前的提交记录进行小小的修改，这里有两个方法。</p>
-</blockquote>
-<p><code>git commit --amend</code>追加提交<br>将不会重复提交而是修改之前的提交于同一位置</p>
-<p>可以先移动顺序，将要修改的放前面来，修改后再排序放回去。最后合并main分支。</p>
-<p>使用<code>git cherry-pick</code>一步步复制修改</p>
-<h1 id="Git-tag-——-标签-锚点"><a href="#Git-tag-——-标签-锚点" class="headerlink" title="Git tag —— 标签&#x2F;锚点"></a>Git tag —— 标签&#x2F;锚点</h1><p><code>git tag &lt;标签名&gt; &lt;指向位置&gt;</code><br><em>可以通过<code>git check</code>移动到标签</em></p>
-<p><code>git describe </code>可以 <strong>描述</strong>离你最近的锚点（也就是标签)</p>
-<p>语法：<code>git describe &lt;ref&gt;</code>^1<br>返回值:<code>&lt;tag&gt;-&lt;numCommits&gt;-g&lt;hash&gt;</code>^2</p>
+<p><strong><code>output</code>数组通常包含多个项目！</strong> 它可以包含工具调用、关于<a href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a>生成的推理令牌的数据以及其他项目。假设模型的文本输出存在于<code>output[0].content[0].text</code>中是不安全的。</p>
+<p>我们的一些<a href="https://developers.openai.com/api/docs/libraries">官方SDK</a>为了方便起见，在模型响应中包含了一个<code>output_text</code>属性，该属性将模型的所有文本输出聚合为单个字符串。这可以作为访问模型文本输出的快捷方式，可能很有用。</p>
+<p>除了纯文本，你还可以让模型以JSON格式返回结构化数据——此功能称为<a href="https://developers.openai.com/api/docs/guides/structured-outputs"><strong>结构化输出</strong></a>。</p>
+<h2 id="选择模型"><a href="#选择模型" class="headerlink" title="选择模型"></a>选择模型</h2><p>通过API生成内容时，一个关键选择是使用哪个模型——上述代码示例中的<code>model</code>参数。<a href="https://developers.openai.com/api/docs/models">你可以在此处找到可用模型的完整列表</a>。以下是选择文本生成模型时需要考虑的几个因素。</p>
+<ul>
+<li><strong><a href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a></strong> 会生成内部思维链来分析输入提示，擅长理解复杂任务和多步骤规划。但它们通常比GPT模型更慢、更昂贵。</li>
+<li><strong>GPT模型</strong> 快速、成本效益高且高度智能，但需要更明确的指令来说明如何完成任务。</li>
+<li><strong>大型和小型（mini或nano）模型</strong> 在速度、成本和智能性之间提供权衡。大型模型在理解提示和跨领域解决问题方面更有效，而小型模型通常更快、更便宜。</li>
+</ul>
+<p>如果不确定，<a href="https://developers.openai.com/api/docs/models/gpt-5.5"><code>gpt-5.5</code></a> 为通用文本生成和提示迭代提供了一个强大的默认选择。</p>
+<h2 id="提示工程-1"><a href="#提示工程-1" class="headerlink" title="提示工程"></a>提示工程</h2><p><strong>提示工程</strong> 是为模型编写有效指令的过程，以便模型能够一致地生成满足你要求的内容。</p>
+<p>由于模型生成的内容是非确定性的，通过提示获得所需输出既是艺术也是科学。然而，你可以应用技术和最佳实践来持续获得良好的结果。</p>
+<p>一些提示工程技术适用于所有模型，例如使用消息角色。但不同类型的模型（如推理模型与GPT模型）可能需要不同的提示方式才能产生最佳结果。即使是同一系列中不同快照的模型也可能产生不同的结果。因此，在构建更复杂的应用时，我们强烈建议：</p>
+<ul>
+<li>将你的生产应用固定到特定的<a href="https://developers.openai.com/api/docs/models">模型快照</a>（例如 <code>gpt-4.1-2025-04-14</code>），以确保行为一致。</li>
+<li>构建<a href="https://developers.openai.com/api/docs/guides/evals">评估（evals）</a>来衡量提示的行为，以便在迭代或更改和升级模型版本时监控提示性能。</li>
+</ul>
+<p>现在，让我们探讨一些可用于构建提示的工具和技术。</p>
+<h2 id="消息角色与指令遵循"><a href="#消息角色与指令遵循" class="headerlink" title="消息角色与指令遵循"></a>消息角色与指令遵循</h2><p>你可以使用<code>instructions</code> API参数或<strong>消息角色</strong>，以<a href="https://model-spec.openai.com/2025-02-12.html#chain_of_command">不同级别的权威</a>向模型提供指令。</p>
+<p><code>instructions</code>参数向模型提供关于其在生成响应时应如何行为的高级指令，包括语气、目标和正确响应的示例。以这种方式提供的任何指令都将优先于<code>input</code>参数中的提示。</p>
+<p><strong>使用指令生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">reasoning</span>: &#123; <span class="attr">effort</span>: <span class="string">&quot;low&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">instructions</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span>,</span><br><span class="line">    <span class="attr">input</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    reasoning=&#123;<span class="string">&quot;effort&quot;</span>: <span class="string">&quot;low&quot;</span>&#125;,</span><br><span class="line">    instructions=<span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span>,</span><br><span class="line">    <span class="built_in">input</span>=<span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;https://api.openai.com/v1/responses&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">    -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">        &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">        &quot;reasoning&quot;: &#123;&quot;effort&quot;: &quot;low&quot;&#125;,</span></span><br><span class="line"><span class="string">        &quot;instructions&quot;: &quot;$&#123;semicolonsDevMsg&#125;&quot;,</span></span><br><span class="line"><span class="string">        &quot;input&quot;: &quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的示例大致相当于在<code>input</code>数组中使用以下输入消息：</p>
+<p><strong>使用不同角色的消息生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">reasoning</span>: &#123; <span class="attr">effort</span>: <span class="string">&quot;low&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">input</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">role</span>: <span class="string">&quot;developer&quot;</span>,</span><br><span class="line">            <span class="attr">content</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">role</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">            <span class="attr">content</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    ],</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    reasoning=&#123;<span class="string">&quot;effort&quot;</span>: <span class="string">&quot;low&quot;</span>&#125;,</span><br><span class="line">    <span class="built_in">input</span>=[</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;developer&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: <span class="string">&quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">            <span class="string">&quot;content&quot;</span>: <span class="string">&quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;https://api.openai.com/v1/responses&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">    -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">    -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">        &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">        &quot;reasoning&quot;: &#123;&quot;effort&quot;: &quot;low&quot;&#125;,</span></span><br><span class="line"><span class="string">        &quot;input&quot;: [</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;role&quot;: &quot;developer&quot;,</span></span><br><span class="line"><span class="string">                &quot;content&quot;: &quot;$&#123;semicolonsDevMsg&#125;&quot;</span></span><br><span class="line"><span class="string">            &#125;,</span></span><br><span class="line"><span class="string">            &#123;</span></span><br><span class="line"><span class="string">                &quot;role&quot;: &quot;user&quot;,</span></span><br><span class="line"><span class="string">                &quot;content&quot;: &quot;$&#123;semicolonsPrompt&#125;&quot;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        ]</span></span><br><span class="line"><span class="string">    &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>请注意，<code>instructions</code>参数仅适用于当前的响应生成请求。如果你正在使用<code>previous_response_id</code>参数<a href="https://developers.openai.com/api/docs/guides/conversation-state">管理对话状态</a>，则先前轮次中使用的<code>instructions</code>将不会存在于上下文中。</p>
+<p><a href="https://model-spec.openai.com/2025-02-12.html#chain_of_command">OpenAI模型规范</a>描述了我们的模型如何给予不同角色的消息不同级别的优先级。</p>
+<table>
+<thead>
+<tr>
+<th><code>developer</code></th>
+<th><code>user</code></th>
+<th><code>assistant</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>developer</code>消息是由应用程序开发者提供的指令，优先于<code>user</code>消息。</td>
+<td><code>user</code>消息是由最终用户提供的指令，优先级低于<code>developer</code>消息。</td>
+<td>由模型生成的消息具有<code>assistant</code>角色。</td>
+</tr>
+</tbody></table>
+<p>多轮对话可能包含多条这些类型的消息，以及由你和模型提供的其他内容类型。在此处了解有关<a href="https://developers.openai.com/api/docs/guides/conversation-state">管理对话状态</a>的更多信息。</p>
+<p>你可以将<code>developer</code>和<code>user</code>消息想象成编程语言中的函数及其参数。</p>
+<ul>
+<li><code>developer</code>消息提供系统的规则和业务逻辑，就像函数定义一样。</li>
+<li><code>user</code>消息提供输入和配置，<code>developer</code>消息指令将应用于这些输入和配置，就像函数的参数一样。</li>
+</ul>
+<h2 id="可复用提示"><a href="#可复用提示" class="headerlink" title="可复用提示"></a>可复用提示</h2><p>在OpenAI仪表板中，你可以开发可复用的<a href="https://platform.openai.com/chat/edit">提示</a>，并在API请求中使用它们，而不是在代码中指定提示的内容。这样，你可以更轻松地构建和评估提示，并在不更改集成代码的情况下部署改进版的提示。</p>
+<p>工作原理如下：</p>
 <ol>
-<li><p><code>&lt;ref&gt;</code> 可以是任何能被 Git 识别成提交记录的引用，如果你没有指定的话，Git 会使用你目前所在的位置（<code>HEAD</code>）。</p>
-</li>
-<li><p><code>tag</code> 表示的是离 <code>ref</code> 最近的标签， <br><code>numCommits</code> 是表示这个 <code>ref</code> 与 <code>tag</code> 相差有多少个提交记录，<br><code>hash</code> 表示的是你所给定的 <code>ref</code> 所表示的提交记录哈希值的前几位。</p>
+<li><strong>创建可复用提示</strong> 在<a href="https://platform.openai.com/chat/edit">仪表板</a>中，使用占位符如 <code>&#123;&#123;customer_name&#125;&#125;</code>。</li>
+<li><strong>在API请求中使用提示</strong> 使用 <code>prompt</code> 参数。<code>prompt</code> 参数对象有三个可配置的属性：<ul>
+<li><code>id</code> — 提示的唯一标识符，在仪表板中找到。</li>
+<li><code>version</code> — 提示的特定版本（默认为仪表板中指定的“当前”版本）。</li>
+<li><code>variables</code> — 要替换提示中变量的值映射。替换值可以是字符串，也可以是其他响应输入消息类型，如 <code>input_image</code> 或 <code>input_file</code>。<a href="https://developers.openai.com/api/docs/api-reference/responses/create">请参阅完整的API参考</a>。</li>
+</ul>
 </li>
 </ol>
-<h1 id="多分支-rebase"><a href="#多分支-rebase" class="headerlink" title="多分支 rebase"></a>多分支 rebase</h1><p> <code>git rebase &lt;1&gt; &lt;2&gt;</code>1→2<br>2分支中所有的提交记录都将合并到1分支之下</p>
+<p><strong>使用提示模板生成文本</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">prompt</span>: &#123;</span><br><span class="line">        <span class="attr">id</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="attr">version</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">        <span class="attr">variables</span>: &#123;</span><br><span class="line">            <span class="attr">customer_name</span>: <span class="string">&quot;Jane Doe&quot;</span>,</span><br><span class="line">            <span class="attr">product</span>: <span class="string">&quot;40oz juice box&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    prompt=&#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="string">&quot;version&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;variables&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;customer_name&quot;</span>: <span class="string">&quot;Jane Doe&quot;</span>,</span><br><span class="line">            <span class="string">&quot;product&quot;</span>: <span class="string">&quot;40oz juice box&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;prompt&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;id&quot;: &quot;pmpt_abc123&quot;,</span></span><br><span class="line"><span class="string">      &quot;version&quot;: &quot;2&quot;,</span></span><br><span class="line"><span class="string">      &quot;variables&quot;: &#123;</span></span><br><span class="line"><span class="string">        &quot;customer_name&quot;: &quot;Jane Doe&quot;,</span></span><br><span class="line"><span class="string">        &quot;product&quot;: &quot;40oz juice box&quot;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>包含文件输入的提示模板</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上传一个PDF，我们将在提示变量中引用它</span></span><br><span class="line"><span class="keyword">const</span> file = <span class="keyword">await</span> client.<span class="property">files</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">file</span>: fs.<span class="title function_">createReadStream</span>(<span class="string">&quot;draconomicon.pdf&quot;</span>),</span><br><span class="line">    <span class="attr">purpose</span>: <span class="string">&quot;user_data&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    <span class="attr">prompt</span>: &#123;</span><br><span class="line">        <span class="attr">id</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="attr">variables</span>: &#123;</span><br><span class="line">            <span class="attr">topic</span>: <span class="string">&quot;Dragons&quot;</span>,</span><br><span class="line">            <span class="attr">reference_pdf</span>: &#123;</span><br><span class="line">                <span class="attr">type</span>: <span class="string">&quot;input_file&quot;</span>,</span><br><span class="line">                <span class="attr">file_id</span>: file.<span class="property">id</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> openai, pathlib</span><br><span class="line"></span><br><span class="line">client = openai.OpenAI()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传一个PDF，我们将在变量中引用它</span></span><br><span class="line">file = client.files.create(</span><br><span class="line">    file=<span class="built_in">open</span>(<span class="string">&quot;draconomicon.pdf&quot;</span>, <span class="string">&quot;rb&quot;</span>),</span><br><span class="line">    purpose=<span class="string">&quot;user_data&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    prompt=&#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="string">&quot;pmpt_abc123&quot;</span>,</span><br><span class="line">        <span class="string">&quot;variables&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;topic&quot;</span>: <span class="string">&quot;Dragons&quot;</span>,</span><br><span class="line">            <span class="string">&quot;reference_pdf&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;type&quot;</span>: <span class="string">&quot;input_file&quot;</span>,</span><br><span class="line">                <span class="string">&quot;file_id&quot;</span>: file.<span class="built_in">id</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 假设你已经上传了PDF并获得了FILE_ID</span></span><br><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;prompt&quot;: &#123;</span></span><br><span class="line"><span class="string">      &quot;id&quot;: &quot;pmpt_abc123&quot;,</span></span><br><span class="line"><span class="string">      &quot;variables&quot;: &#123;</span></span><br><span class="line"><span class="string">        &quot;topic&quot;: &quot;Dragons&quot;,</span></span><br><span class="line"><span class="string">        &quot;reference_pdf&quot;: &#123;</span></span><br><span class="line"><span class="string">          &quot;type&quot;: &quot;input_file&quot;,</span></span><br><span class="line"><span class="string">          &quot;file_id&quot;: &quot;file-abc123&quot;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Markdown和XML格式化消息"><a href="#使用Markdown和XML格式化消息" class="headerlink" title="使用Markdown和XML格式化消息"></a>使用Markdown和XML格式化消息</h2><p>在编写<code>developer</code>和<code>user</code>消息时，你可以结合使用<a href="https://commonmark.org/help/">Markdown</a>格式和<a href="https://www.w3.org/TR/xml/">XML标签</a>，帮助模型理解提示和上下文数据的逻辑边界。</p>
+<p>Markdown标题和列表有助于标记提示的不同部分，并向模型传达层次结构。它们也可能在开发过程中使提示更易读。XML标签有助于界定一段内容（例如用作参考的支持文档）的开始和结束位置。XML属性还可用于定义提示中内容的元数据，这些元数据可以被你的指令引用。</p>
+<p>通常，一条<code>developer</code>消息将包含以下部分，通常按此顺序（但确切的最佳内容和顺序可能因你使用的模型而异）：</p>
+<ul>
+<li><strong>身份：</strong> 描述助手的目的、沟通风格和高级目标。</li>
+<li><strong>指令：</strong> 为模型提供关于如何生成所需响应的指导。它应遵循哪些规则？模型应该做什么，绝对不应该做什么？此部分可能包含与你的用例相关的许多子部分，例如模型应如何<a href="https://developers.openai.com/api/docs/guides/function-calling">调用自定义函数</a>。</li>
+<li><strong>示例：</strong> 提供可能的输入示例，以及模型所需的输出。</li>
+<li><strong>上下文：</strong> 为模型提供生成响应可能需要的任何额外信息，例如训练数据之外的私密&#x2F;专有数据，或你知道将特别相关的任何其他数据。此内容通常最好放在提示的末尾附近，因为你可能为不同的生成请求包含不同的上下文。</li>
+</ul>
+<p>以下是一个使用Markdown和XML标签构建具有不同部分和支持示例的<code>developer</code>消息的示例。</p>
+<p><strong>通过API发送提示以生成代码</strong></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs/promises&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">OpenAI</span> <span class="keyword">from</span> <span class="string">&quot;openai&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> <span class="title class_">OpenAI</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> instructions = <span class="keyword">await</span> fs.<span class="title function_">readFile</span>(<span class="string">&quot;prompt.txt&quot;</span>, <span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> response = <span class="keyword">await</span> client.<span class="property">responses</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">model</span>: <span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    instructions,</span><br><span class="line">    <span class="attr">input</span>: <span class="string">&quot;How would I declare a variable for a last name?&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">output_text</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</span><br><span class="line">client = OpenAI()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;prompt.txt&quot;</span>, <span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    instructions = f.read()</span><br><span class="line"></span><br><span class="line">response = client.responses.create(</span><br><span class="line">    model=<span class="string">&quot;gpt-5&quot;</span>,</span><br><span class="line">    instructions=instructions,</span><br><span class="line">    <span class="built_in">input</span>=<span class="string">&quot;How would I declare a variable for a last name?&quot;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.output_text)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl https://api.openai.com/v1/responses \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer <span class="variable">$OPENAI_API_KEY</span>&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;</span></span><br><span class="line"><span class="string">    &quot;model&quot;: &quot;gpt-5&quot;,</span></span><br><span class="line"><span class="string">    &quot;instructions&quot;: &quot;&#x27;</span><span class="string">&quot;<span class="subst">$(&lt; prompt.txt)</span>&quot;</span><span class="string">&#x27;&quot;,</span></span><br><span class="line"><span class="string">    &quot;input&quot;: &quot;How would I declare a variable for a last name?&quot;</span></span><br><span class="line"><span class="string">  &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="通过提示缓存节省成本和延迟"><a href="#通过提示缓存节省成本和延迟" class="headerlink" title="通过提示缓存节省成本和延迟"></a>通过提示缓存节省成本和延迟</h4><p>在构建消息时，你应该尝试将期望在API请求中反复使用的内容放在提示的<strong>开头</strong>，<strong>以及</strong>放在JSON请求体中传递给<a href="https://developers.openai.com/api/docs/api-reference/chat">聊天补全</a>或<a href="https://developers.openai.com/api/docs/api-reference/responses">响应式API</a>的最早的API参数中。这可以使你通过<a href="https://developers.openai.com/api/docs/guides/prompt-caching">提示缓存</a>获得最大的成本和延迟节省。</p>
+<h2 id="少样本学习"><a href="#少样本学习" class="headerlink" title="少样本学习"></a>少样本学习</h2><p>少样本学习允许你通过在提示中包含少量输入&#x2F;输出示例来引导大型语言模型执行新任务，而不是对模型进行<a href="https://developers.openai.com/api/docs/guides/model-optimization">微调</a>。模型会隐式地从这些示例中“学习”模式，并将其应用于提示。提供示例时，尝试展示各种可能的输入及其所需的输出。</p>
+<p>通常，你会将示例作为API请求中<code>developer</code>消息的一部分。以下是一个<code>developer</code>消息示例，其中包含展示模型如何将客户服务评论分类为正面或负面的示例。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 身份</span><br><span class="line"></span><br><span class="line">你是一个乐于助人的助手，负责将简短的产品评论标记为正面、负面或中性。</span><br><span class="line"></span><br><span class="line"># 指令</span><br><span class="line"></span><br><span class="line">* 你的响应中只输出一个单词，没有额外的格式或评论。</span><br><span class="line">* 根据你收到的产品评论的情感，你的响应只能是“正面”、“负面”或“中性”中的一个词。</span><br><span class="line"></span><br><span class="line"># 示例</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-1&quot;&gt;</span><br><span class="line">我绝对喜欢这款耳机——音质太棒了！</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-1&quot;&gt;</span><br><span class="line">正面</span><br><span class="line">&lt;/assistant_response&gt;</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-2&quot;&gt;</span><br><span class="line">电池续航还可以，但耳垫感觉廉价。</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-2&quot;&gt;</span><br><span class="line">中性</span><br><span class="line">&lt;/assistant_response&gt;</span><br><span class="line"></span><br><span class="line">&lt;product_review id=&quot;example-3&quot;&gt;</span><br><span class="line">糟糕的客户服务，我再也不会从他们那里买东西了。</span><br><span class="line">&lt;/product_review&gt;</span><br><span class="line"></span><br><span class="line">&lt;assistant_response id=&quot;example-3&quot;&gt;</span><br><span class="line">负面</span><br><span class="line">&lt;/assistant_response&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="包含相关上下文信息"><a href="#包含相关上下文信息" class="headerlink" title="包含相关上下文信息"></a>包含相关上下文信息</h2><p>在你给模型的提示中包含模型可以用来生成响应的额外上下文信息通常很有用。这样做有几个常见原因：</p>
+<ul>
+<li>让模型访问专有数据，或模型训练数据集之外的任何其他数据。</li>
+<li>将模型的响应限制在你已确定最有益的一组特定资源。</li>
+</ul>
+<p>将额外相关上下文添加到模型生成请求中的技术有时称为<strong>检索增强生成（RAG）</strong>。你可以通过多种方式向提示中添加额外上下文，例如查询向量数据库并将返回的文本包含到提示中，或者使用OpenAI内置的<a href="https://developers.openai.com/api/docs/guides/tools-file-search">文件搜索工具</a>根据上传的文档生成内容。</p>
+<h4 id="规划上下文窗口"><a href="#规划上下文窗口" class="headerlink" title="规划上下文窗口"></a>规划上下文窗口</h4><p>模型在生成请求期间考虑的上下文只能处理有限的数据量。这个内存限制称为<strong>上下文窗口</strong>，以<a href="https://blogs.nvidia.com/blog/ai-tokens-explained">tokens（令牌）</a>（你传入的数据块，从文本到图像）来定义。</p>
+<p>模型的上下文窗口大小各不相同，从低端的10万令牌到较新GPT-4.1模型的100万令牌。<a href="https://developers.openai.com/api/docs/models">请参阅模型文档</a>了解每个模型的具体上下文窗口大小。</p>
+<h2 id="为当前的GPT-5系列模型设计提示"><a href="#为当前的GPT-5系列模型设计提示" class="headerlink" title="为当前的GPT-5系列模型设计提示"></a>为当前的GPT-5系列模型设计提示</h2><p>像<a href="https://developers.openai.com/api/docs/models/gpt-5.5"><code>gpt-5.5</code></a>这样的GPT模型受益于精确的指令，这些指令在提示中明确提供了完成任务所需的逻辑和数据。为了充分利用最新的GPT-5系列模型，请从当前的提示指南开始。</p>
+<a href="/api/docs/guides/prompt-guidance">
+  通过当前指南、实际示例和迁移说明，了解如何充分利用最新的GPT-5系列模型进行提示。
+</a>
+
+<h3 id="最新GPT-5系列模型的提示最佳实践"><a href="#最新GPT-5系列模型的提示最佳实践" class="headerlink" title="最新GPT-5系列模型的提示最佳实践"></a>最新GPT-5系列模型的提示最佳实践</h3><p>有关完整的当前处理方法，请使用<a href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。以下实用提醒仍然适用。</p>
+<h4 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h4><p>在提示<code>gpt-5.5</code>进行编程任务时，遵循几个最佳实践最为有效：定义代理的角色，通过示例强制结构化工具使用，要求进行彻底的测试以确保正确性，并设置Markdown标准以产生清晰的输出。</p>
+<p><strong>明确的角色和工作流程指导</strong><br>将模型构建为具有明确职责的软件工程代理。为使用<code>functions.run</code>等工具执行代码任务提供清晰的指令，并指定何时不使用某些模式——例如，除非必要，否则避免交互式执行。</p>
+<p><strong>测试和验证</strong><br>指导模型使用单元测试或Python命令测试更改，并小心验证补丁，因为像<code>apply_patch</code>这样的工具即使失败也可能返回“完成”。</p>
+<p><strong>工具使用示例</strong><br>包含如何使用提供函数调用命令的具体示例，这可以提高可靠性并确保遵守预期的工作流程。</p>
+<p><strong>Markdown标准</strong><br>指导模型使用行内代码、代码围栏、列表和适当的表格生成干净、语义正确的markdown，并使用反引号格式化文件路径、函数和类。</p>
+<p>有关特定于编程的详细指导和提示示例，请参阅我们的<a href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h4 id="前端工程"><a href="#前端工程" class="headerlink" title="前端工程"></a>前端工程</h4><p><a href="https://developers.openai.com/api/docs/models/gpt-5.5">GPT-5.5</a> 在从头构建前端以及为大型、成熟的代码库做出贡献方面表现良好。为了获得最佳结果，我们建议使用以下库：</p>
+<ul>
+<li><strong>样式&#x2F;UI：</strong> Tailwind CSS, shadcn&#x2F;ui, Radix Themes</li>
+<li><strong>图标：</strong> Lucide, Material Symbols, Heroicons</li>
+<li><strong>动画：</strong> Motion</li>
+</ul>
+<p><strong>从零开始的Web应用</strong></p>
+<p>GPT-5可以通过单个提示生成前端Web应用，无需示例。以下是一个示例提示：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">你是一位世界级的Web开发人员，能够通过单个提示从零开始生成惊艳、交互式和创新的网站。你擅长提供顶级的单次解决方案。</span><br><span class="line">你的过程很简单，遵循以下步骤：</span><br><span class="line">步骤1：创建一个评估标准，并不断完善，直到你完全自信。</span><br><span class="line">步骤2：考虑定义世界级单次Web应用的每个元素，然后利用这些见解创建一个&lt;ONE_SHOT_RUBRIC&gt;，包含5-7个类别。保持此标准隐藏——仅供内部使用。</span><br><span class="line">步骤3：应用该标准来迭代给定提示的最优解决方案。如果它在所有类别中均未达到最高标准，请改进并重试。</span><br><span class="line">步骤4：在完全实现目标的同时追求简洁，避免外部依赖，如Next.js或React。</span><br></pre></td></tr></table></figure>
+
+<p><strong>与大型代码库集成</strong></p>
+<p>对于大型代码库中的前端工程工作，我们发现将以下类别的指令添加到提示中能带来最佳结果：</p>
+<ul>
+<li><strong>原则：</strong> 设定视觉质量标准，使用模块化&#x2F;可复用组件，并保持设计一致性。</li>
+<li><strong>UI&#x2F;UX：</strong> 指定排版、颜色、间距&#x2F;布局、交互状态（悬停、空状态、加载状态）和可访问性。</li>
+<li><strong>结构：</strong> 定义文件&#x2F;文件夹布局，以便无缝集成。</li>
+<li><strong>组件：</strong> 提供可复用包装器示例和后端调用分离策略。</li>
+<li><strong>页面：</strong> 提供常见布局的模板。</li>
+<li><strong>代理指令：</strong> 要求模型确认设计假设、搭建项目框架、强制执行标准、集成API、测试状态并记录代码。</li>
+</ul>
+<p>有关前端开发特定的详细指导和提示示例，请参阅我们的<a href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h4 id="代理任务"><a href="#代理任务" class="headerlink" title="代理任务"></a>代理任务</h4><p>对于使用<code>gpt-5.5</code>的代理和长时间运行的任务，将提示集中在三个核心实践上：彻底规划任务以确保完全解决问题，为主要工具使用决策提供清晰的序言，并使用TODO工具以有序的方式跟踪工作流程和进度。</p>
+<p><strong>规划和持久性</strong><br>指导模型在将控制权交还给用户之前完全解决查询问题，将其分解为子任务，并在每次工具调用后进行反思以确认完成情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">请记住，你是一个代理——在结束你的回合并将控制权交还给用户之前，请继续直到用户的查询完全解决。将用户的查询分解为所有必需的子请求，并确认每个子请求都已完成。不要只完成部分请求就停止。只有在确定问题已解决时才终止你的回合。你必须准备好回答多个问题，并且只有在用户确认他们完成后才能结束调用。</span><br><span class="line"></span><br><span class="line">在后续进行函数调用之前，你必须根据工作流程步骤进行广泛的规划，并在每次函数调用后进行广泛的反思，确保用户的查询以及相关的子请求得到完全解决。</span><br></pre></td></tr></table></figure>
+
+<p><strong>透明的序言</strong></p>
+<p>要求模型解释为什么要调用工具，但仅在关键步骤时进行。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在调用工具之前，解释你为什么要调用它。</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用标准和TODO进行进度跟踪</strong></p>
+<p>使用TODO列表工具或标准来强制执行结构化规划并避免遗漏步骤。</p>
+<p>有关构建代理的详细指导和提示示例，请参阅<a href="https://developers.openai.com/api/docs/guides/prompt-guidance">提示指南</a>。</p>
+<h2 id="为推理模型设计提示"><a href="#为推理模型设计提示" class="headerlink" title="为推理模型设计提示"></a>为推理模型设计提示</h2><p>在提示<a href="https://developers.openai.com/api/docs/guides/reasoning">推理模型</a>与提示GPT模型时，需要考虑一些差异。一般来说，推理模型在仅提供高级指导的任务上会提供更好的结果。这与GPT模型不同，后者受益于非常精确的指令。</p>
+<p>你可以这样理解推理模型和GPT模型之间的区别：</p>
+<ul>
+<li>推理模型就像一位资深同事。你可以给他们一个要实现的目标，并相信他们会自行解决细节问题。</li>
+<li>GPT模型就像一位初级同事。他们在收到明确的指令以创建特定输出时表现最佳。</li>
+</ul>
+<p>有关使用推理模型的最佳实践的更多信息，请<a href="https://developers.openai.com/api/docs/guides/reasoning-best-practices">参考本指南</a>。</p>
+<h2 id="后续步骤"><a href="#后续步骤" class="headerlink" title="后续步骤"></a>后续步骤</h2><p>既然你已经了解了文本输入和输出的基础知识，你可能希望接下来查看以下资源之一：</p>
+<p><a href="https://platform.openai.com/chat/edit">使用Playground开发和迭代提示。</a></p>
+<p><a href="https://developers.openai.com/api/docs/guides/structured-outputs">确保模型输出的JSON数据符合JSON模式。</a></p>
+<p><a href="https://developers.openai.com/api/docs/api-reference/responses">在API参考中查看文本生成的所有选项。</a></p>
+<h2 id="其他资源"><a href="#其他资源" class="headerlink" title="其他资源"></a>其他资源</h2><p>如需更多灵感，请访问<a href="https://developers.openai.com/cookbook">OpenAI Cookbook</a>，其中包含示例代码，并链接到第三方资源，例如：</p>
+<ul>
+<li><a href="https://developers.openai.com/cookbook/related_resources#prompting-libraries--tools">提示库与工具</a></li>
+<li><a href="https://developers.openai.com/cookbook/related_resources#prompting-guides">提示指南</a></li>
+<li><a href="https://developers.openai.com/cookbook/related_resources#video-courses">视频课程</a></li>
+<li><a href="https://developers.openai.com/cookbook/related_resources#papers-on-advanced-prompting-to-improve-reasoning">关于高级提示以改进推理的论文</a></li>
+</ul>
 ]]></content>
       <categories>
-        <category>学习记录</category>
-        <category>编程语言</category>
+        <category>资源存档</category>
+        <category>参考资料</category>
       </categories>
       <tags>
-        <tag>git</tag>
-        <tag>版本控制</tag>
-        <tag>入门</tag>
+        <tag>参考</tag>
+        <tag>大模型</tag>
       </tags>
   </entry>
   <entry>
@@ -349,184 +404,56 @@
       </tags>
   </entry>
   <entry>
-    <title>Hadoop搭建教程</title>
-    <url>/hadoop2.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
-    .inline-note {
-      display: inline-block;
-      background-color: #fffbe6;
-      color: #333;
-      border-left: 4px solid #f7c948;
-      padding: 0.2em 0.6em;
-      margin: 0 0.2em;
-      font-size: 0.95em;
-      border-radius: 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      font-style: italic;
-      cursor: help;
-      transition: all 0.2s ease;
-    }
-
-    .inline-note:hover {
-      background-color: #fff3bf;
-      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
-    }
-</style>
-<p>在<a href="../hadoop1.html">Hadoop入门 </a>中，为大家简单介绍了 <a href="https://hadoop.apache.org/docs/">Hadoop</a> 。<br>在本文，我将为大家演示基于 linux 的 Hadoop 搭建。</p>
+    <title>Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程</title>
+    <url>/hdfs_ha_start.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>hdfs_ha的启动记录，仅方便查看用</p>
 <span id="more"></span>
+<h1 id="Hadoop-HA-集群启动流程"><a href="#Hadoop-HA-集群启动流程" class="headerlink" title="Hadoop HA 集群启动流程"></a>Hadoop HA 集群启动流程</h1><h2 id="1-启动-ZooKeeper（三台机器）"><a href="#1-启动-ZooKeeper（三台机器）" class="headerlink" title="1. 启动 ZooKeeper（三台机器）"></a>1. 启动 ZooKeeper（三台机器）</h2><p>ZooKeeper 安装目录：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/opt/module/apache-zookeeper-3.7.1-bin</span><br></pre></td></tr></table></figure>
 
-<blockquote>
-<p><strong>本文所用软件版本:</strong></p>
-<p>CentOS 7<br>Vmware 16<br>Xshell 7<br>Xftp 7</p>
-</blockquote>
-<div class="note primary"><p><strong>在开始之前你需要提前下载：</strong></p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion">VMwareWworkstation Pro</a> 虚拟机管理软件</li>
-<li><input checked="" disabled="" type="checkbox"> <a href="https://mirrors.aliyun.com/centos/7/isos/x86_64/">CentOS 7 镜像</a>或者其他版本的镜像</li>
-</ul>
-<p>PS. 镜像下载时间超长</p>
-<p><strong>你需要提前准备:</strong></p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> 一台配置好 <em><a href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE">网络</a>&amp;主机名&amp;配置好xshell</em> 的虚拟机</li>
-</ul>
-</div>
-
-
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/zkServer.sh start</span><br></pre></td></tr></table></figure>
 
 <hr>
-<p><span class = "inline-note" title ="小提示">本文将以初学者的视角进行详细讲解，左侧配有目录，大家按需选择阅读章节OuO。</p>
-<p>全文中的重点内容都采用与本条相同的样式，鼠标悬停即可显示简要说明，方便快速理解。</p>
-</span>
+<h2 id="2-启动-JournalNode（三台机器）"><a href="#2-启动-JournalNode（三台机器）" class="headerlink" title="2. 启动 JournalNode（三台机器）"></a>2. 启动 JournalNode（三台机器）</h2><p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs --daemon start journalnode</span><br></pre></td></tr></table></figure>
 
-<h1 id="VMware-软件使用"><a href="#VMware-软件使用" class="headerlink" title="VMware 软件使用"></a>VMware 软件使用</h1><p>具体从软件配置到创建虚拟机这里不再赘述，大家可以自行搜索，这里只展示我觉得需要注意的点</p>
-<h2 id="网络设置"><a href="#网络设置" class="headerlink" title="网络设置"></a>网络设置</h2><p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/image-20250814221946282.png"></p>
-<div class="tabs" id="vmware"><ul class="nav-tabs"><li class="tab active"><a href="#vmware-1">桥接模式</a></li><li class="tab"><a href="#vmware-2">NAT模式</a></li><li class="tab"><a href="#vmware-3">仅主机模式</a></li></ul><div class="tab-content"><div class="tab-pane active" id="vmware-1"><p>桥接模式会直接把虚拟机连接到物理网络，就像一台真实电脑。<br><strong>虚拟机直接使用主机所在的局域网IP</strong></p></div><div class="tab-pane" id="vmware-2"><p>NAT模式会通过主机共享网络连接，虚拟机和外网通信时由主机做中转。<br><strong>虚拟机通过主机的网络访问外网</strong></p></div><div class="tab-pane" id="vmware-3"><p>仅主机模式下，虚拟机只能和主机互通，不能访问外网。<br><strong>适合内网测试或安全环境</strong></p></div></div></div>
-
-<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><p>下载vmware-tools（可在vmware与主机之间复制粘贴）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt install open-vm-tools-desktop -y</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
 <hr>
-<h1 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemcttl stop firewalld    --关闭防火墙</span><br><span class="line">systemctl disable firewalld    --永久关闭防火墙</span><br></pre></td></tr></table></figure>
+<h2 id="3-启动-ZKFC"><a href="#3-启动-ZKFC" class="headerlink" title="3. 启动 ZKFC"></a>3. 启动 ZKFC</h2><p>Hadoop 安装目录：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/opt/module/hadoop-3.3.4/bin</span><br></pre></td></tr></table></figure>
 
-<h1 id="jdk配置"><a href="#jdk配置" class="headerlink" title="jdk配置"></a>jdk配置</h1><h2 id="1-使用Xftp传输压缩包并解压"><a href="#1-使用Xftp传输压缩包并解压" class="headerlink" title="1.使用Xftp传输压缩包并解压"></a>1.使用Xftp传输压缩包并解压</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@master opt]# pwd</span><br><span class="line">/opt</span><br><span class="line">[root@master opt]# mkdir module #解压后的位置</span><br><span class="line">[root@master opt]# mkdir software #压缩包</span><br><span class="line">[root@master opt]# cd software</span><br><span class="line">[root@master software]# ll</span><br><span class="line">total 1488592</span><br><span class="line">-rw-r--r--. 1 root root  87380462 Aug 27 10:59 apache-flume-1.11.0-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root  22347776 Aug 27 10:59 apache-hive-3.1.2-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root  14853274 Aug 27 10:59 apache-zookeeper-3.8.3-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 730107476 Aug 27 10:59 hadoop-3.3.6.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 141600542 Aug 27 10:59 jdk-8u401-linux-x64.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 528015360 Aug 27 10:59 mysql-5.7.25-1.el7.x86_64.rpm-bundle.tar</span><br><span class="line">[root@master software]# tar -zvxf jdk-8u401-linux-x64.tar.gz -C ../module #解压jdk压缩包</span><br><span class="line">[root@master software]# tar -zvxf hadoop-3.3.6.tar.gz -C ../module/ #解压hadoop压缩包</span><br><span class="line">[root@master software]# cd ../module/                              </span><br><span class="line">[root@master module]# ll</span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x. 10 1000 1000 4096 Jun 18  2023 hadoop-3.3.6</span><br><span class="line">drwxr-x---.  8 root root 4096 Aug 27 11:02 jdk1.8.0_401</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/hdfs --daemon start zkfc</span><br></pre></td></tr></table></figure>
 
-<h2 id="2-配置环境变量"><a href="#2-配置环境变量" class="headerlink" title="2.配置环境变量"></a>2.配置环境变量</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@master module]# cd jdk1.8.0_401/</span><br><span class="line">[root@master jdk1.8.0_401]# pwd</span><br><span class="line">/opt/module/jdk1.8.0_401</span><br><span class="line"></span><br><span class="line">[root@master module]# vi /etc/profile</span><br><span class="line"></span><br><span class="line">export JAVA_HOME=/opt/module/jdk1.8.0_401</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line"></span><br><span class="line">[root@master module]# source /etc/profile #刷新环境变量</span><br><span class="line">[root@master ~]# jps</span><br><span class="line">508 Jps</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="克隆三台虚拟机"><a href="#克隆三台虚拟机" class="headerlink" title="克隆三台虚拟机"></a>克隆三台虚拟机</h1><p>在克隆之前建议配置好<a href="#1.%E6%9B%B4%E6%94%B9hosts">hosts文件</a>为下一步做准备</p>
-<p>配置好后依次更改主机名</p>
-<p>这里不过多赘述</p>
-<h1 id="配置免密—SSH"><a href="#配置免密—SSH" class="headerlink" title="配置免密—SSH"></a>配置免密—SSH</h1><h2 id="1-更改hosts"><a href="#1-更改hosts" class="headerlink" title="1.更改hosts"></a>1.更改hosts</h2><p>三台虚拟机都更改</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line">[ip-1] [hostname-1]</span><br><span class="line">[ip-2] [hostname-2]</span><br><span class="line">[ip-3] [hostname-3]</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-生成并传输密钥"><a href="#2-生成并传输密钥" class="headerlink" title="2.生成并传输密钥"></a>2.生成并传输密钥</h2><p>在<span class = "inline-note " title = "一定要更改好hosts后再生成">主节点生成密钥</span></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa #生成密钥</span><br><span class="line">ssh-copy-id [hostname-1&amp;2&amp;3] #传输密钥</span><br></pre></td></tr></table></figure>
-
-<p>输入 yes+对应主机的密码</p>
-<p>成功后可以使用 <code>ssh + [hostname-1&amp;2&amp;3]</code>进行测试</p>
-<p><code>exit</code>命令即可退出</p>
-<h1 id="配置Hadoop配置文件"><a href="#配置Hadoop配置文件" class="headerlink" title="配置Hadoop配置文件"></a>配置Hadoop配置文件</h1><p>以下配置文件的路径为<code>$hadoop_home/etc/hadoop/</code></p>
-<h2 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a>core-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://master:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>/root/software/hadoop-3.3.4/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span>    --hadoop路径</span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a>hdfs-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>master:50070<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="mapred-site-xml"><a href="#mapred-site-xml" class="headerlink" title="mapred-site.xml"></a>mapred-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.app.mapreduce.am.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.map.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.reduce.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="yarn-site-xml"><a href="#yarn-site-xml" class="headerlink" title="yarn-site.xml"></a>yarn-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,</span><br><span class="line">HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,</span><br><span class="line">HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>master<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.resource.memory-mb<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>4096<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="hadoop-env-sh"><a href="#hadoop-env-sh" class="headerlink" title="hadoop-env.sh"></a>hadoop-env.sh</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">export JAVA_HOME=$JAVA_HOME</span><br></pre></td></tr></table></figure>
-
-<h2 id="workers"><a href="#workers" class="headerlink" title="workers"></a>workers</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">三台机器的名字</span><br></pre></td></tr></table></figure>
-<h1 id="配置并刷新环境变量"><a href="#配置并刷新环境变量" class="headerlink" title="配置并刷新环境变量"></a>配置并刷新环境变量</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#hadoop</span><br><span class="line">export HADOOP_HOME=/root/software/hadoop-3.3.4</span><br><span class="line">export PATH=$PATH:$HADOOP_HOME/bin</span><br><span class="line"></span><br><span class="line">export HDFS_NAMENODE_USER=root</span><br><span class="line">export HDFS_DATANODE_USER=root</span><br><span class="line">export HDFS_SECONDARYNAMENODE_USER=root</span><br><span class="line">export YARN_RESOURCEMANAGER_USER=root</span><br><span class="line">export YARN_NODEMANAGER_USER=root</span><br></pre></td></tr></table></figure>
-<p>刷新环境变量   <code>source /etc/profile</code></p>
-<h1 id="SSH-传输"><a href="#SSH-传输" class="headerlink" title="SSH 传输"></a>SSH 传输</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp [-1246BCpqrv]  [-c cipher]  [-F ssh_config]  [-i identity_file]  [-l limit]  [-o ssh_option]  [-P port]  [-S program]  [[user@]host1:]file1 [...]  [[user@]host2:]file2</span><br></pre></td></tr></table></figure>
-<p>依次传输Hadoop、环境变量到其他虚拟机</p>
-<h1 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h1><p><span class = "inline-note" title ="注意都在主节点运行"><strong>Hadoop 启动与停止命令一览</strong></span></p>
-<h2 id="1-启动-停止所有守护进程"><a href="#1-启动-停止所有守护进程" class="headerlink" title="1. 启动&#x2F;停止所有守护进程"></a>1. 启动&#x2F;停止所有守护进程</h2><ul>
-<li><p><strong>启动所有守护进程</strong></p>
-<p><code>sbin/start-all.sh</code></p>
-</li>
-</ul>
-<p>启动内容包括：NameNode、Secondary NameNode、DataNode、ResourceManager、NodeManager</p>
-<ul>
-<li><p><strong>停止所有守护进程</strong></p>
-<p><code>sbin/stop-all.sh</code></p>
-</li>
-</ul>
-<p>停止内容包括：NameNode、Secondary NameNode、DataNode、ResourceManager、NodeManager</p>
 <hr>
-<h2 id="2-HDFS-守护进程"><a href="#2-HDFS-守护进程" class="headerlink" title="2. HDFS 守护进程"></a>2. HDFS 守护进程</h2><ul>
-<li><p><strong>启动 HDFS 守护进程</strong></p>
-<p><code>sbin/start-dfs.sh</code></p>
-</li>
-</ul>
-<p>启动内容：NameNode、Secondary NameNode、DataNode</p>
-<ul>
-<li><p><strong>停止 HDFS 守护进程</strong></p>
-<p><code>sbin/stop-dfs.sh</code></p>
-</li>
-</ul>
-<p>停止内容：NameNode、Secondary NameNode、DataNode</p>
-<h3 id="单独启动-停止-HDFS-守护进程"><a href="#单独启动-停止-HDFS-守护进程" class="headerlink" title="单独启动&#x2F;停止 HDFS 守护进程"></a>单独启动&#x2F;停止 HDFS 守护进程</h3><ul>
-<li><p><strong>NameNode</strong></p>
-<p><code>sbin/hadoop-daemons.sh start namenode</code></p>
-<p><code>sbin/hadoop-daemons.sh stop namenode</code></p>
-</li>
-<li><p><strong>DataNode</strong></p>
-<p><code>sbin/hadoop-daemons.sh start datanode</code></p>
-<p><code>sbin/hadoop-daemons.sh stop datanode</code></p>
-</li>
-<li><p><strong>Secondary NameNode</strong></p>
-<p><code>sbin/hadoop-daemons.sh start secondarynamenode</code></p>
-<p><code>sbin/hadoop-daemons.sh stop secondarynamenode</code></p>
-</li>
-</ul>
+<h2 id="4-在-master-上执行（仅需执行一次）"><a href="#4-在-master-上执行（仅需执行一次）" class="headerlink" title="4. 在 master 上执行（仅需执行一次）"></a>4. 在 master 上执行（仅需执行一次）</h2><p>启动 NameNode：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs --daemon start namenode</span><br></pre></td></tr></table></figure>
+
 <hr>
-<h2 id="3-YARN-守护进程"><a href="#3-YARN-守护进程" class="headerlink" title="3. YARN 守护进程"></a>3. YARN 守护进程</h2><ul>
-<li><p><strong>启动 YARN 守护进程</strong></p>
-<p><code>sbin/start-yarn.sh</code></p>
-</li>
-</ul>
-<p>启动内容：ResourceManager、NodeManager</p>
-<ul>
-<li><p><strong>停止 YARN 守护进程</strong></p>
-<p><code>sbin/stop-yarn.sh</code></p>
-</li>
-</ul>
-<p>停止内容：ResourceManager、NodeManager</p>
-<h3 id="单独启动-停止-YARN-守护进程"><a href="#单独启动-停止-YARN-守护进程" class="headerlink" title="单独启动&#x2F;停止 YARN 守护进程"></a>单独启动&#x2F;停止 YARN 守护进程</h3><ul>
-<li><p><strong>ResourceManager</strong></p>
-<p><code>sbin/yarn-daemon.sh start resourcemanager</code></p>
-<p>&#96;&#96;sbin&#x2F;yarn-daemon.sh stop resourcemanager&#96;</p>
-</li>
-<li><p><strong>NodeManager</strong></p>
-<p><code>sbin/yarn-daemons.sh start nodemanager</code></p>
-<p>&#96;&#96;sbin&#x2F;yarn-daemons.sh stop nodemanager&#96;</p>
-</li>
-</ul>
+<h2 id="5-在-slave1-上执行（仅需执行一次）"><a href="#5-在-slave1-上执行（仅需执行一次）" class="headerlink" title="5. 在 slave1 上执行（仅需执行一次）"></a>5. 在 slave1 上执行（仅需执行一次）</h2><p>同步 NameNode 元数据：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs namenode -bootstrapStandby</span><br></pre></td></tr></table></figure>
+
 <hr>
-<h2 id="4-MapReduce-JobHistory-服务"><a href="#4-MapReduce-JobHistory-服务" class="headerlink" title="4. MapReduce JobHistory 服务"></a>4. MapReduce JobHistory 服务</h2><ul>
-<li><p><strong>启动 JobHistory</strong></p>
-<p><code>sbin/mr-jobhistory-daemon.sh start historyserver</code></p>
-</li>
-<li><p><strong>停止 JobHistory</strong></p>
-<p><code>sbin/mr-jobhistory-daemon.sh stop historyserver</code></p>
-</li>
-</ul>
-<h1 id="测试是否成功"><a href="#测试是否成功" class="headerlink" title="测试是否成功"></a>测试是否成功</h1><ul>
-<li><p>先使用jps查看进程，查看是否成功启动所有进程</p>
-</li>
-<li><p>打开网页 主节点的ip地址:9870<br>查看是否有web ui,在这里你能看到你所搭建的集群的基本信息</p>
-</li>
-</ul>
-]]></content>
+<h2 id="6-在-master-上启动集群"><a href="#6-在-master-上启动集群" class="headerlink" title="6. 在 master 上启动集群"></a>6. 在 master 上启动集群</h2><p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./start-all.sh</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="故障转移测试"><a href="#故障转移测试" class="headerlink" title="故障转移测试"></a>故障转移测试</h1><p>关闭当前 Active NameNode：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 &lt;namenode_pid&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="故障转移后的恢复"><a href="#故障转移后的恢复" class="headerlink" title="故障转移后的恢复"></a>故障转移后的恢复</h1><p>启动 HDFS：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./start-dfs.sh</span><br></pre></td></tr></table></figure>
+
+<p>切换 NameNode 为 Standby：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs haadmin -transitionToStandby --forcemanual nn2</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>技术实践</category>
         <category>系统运维</category>
       </categories>
       <tags>
-        <tag>linux</tag>
+        <tag>安装配置</tag>
         <tag>大数据</tag>
-        <tag>环境搭建</tag>
-        <tag>实战</tag>
         <tag>Hadoop</tag>
       </tags>
   </entry>
@@ -876,69 +803,15 @@
         <category>系统运维</category>
       </categories>
       <tags>
-        <tag>入门</tag>
         <tag>大数据</tag>
         <tag>Hadoop</tag>
         <tag>分布式系统</tag>
+        <tag>入门</tag>
       </tags>
   </entry>
   <entry>
-    <title>Hadoop 3.3.4 + ZooKeeper 3.7.1 的 HDFS HA（双 NameNode）部署流程</title>
-    <url>/hdfs_ha_start.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>hdfs_ha的启动记录，仅方便查看用</p>
-<span id="more"></span>
-<h1 id="Hadoop-HA-集群启动流程"><a href="#Hadoop-HA-集群启动流程" class="headerlink" title="Hadoop HA 集群启动流程"></a>Hadoop HA 集群启动流程</h1><h2 id="1-启动-ZooKeeper（三台机器）"><a href="#1-启动-ZooKeeper（三台机器）" class="headerlink" title="1. 启动 ZooKeeper（三台机器）"></a>1. 启动 ZooKeeper（三台机器）</h2><p>ZooKeeper 安装目录：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/opt/module/apache-zookeeper-3.7.1-bin</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/zkServer.sh start</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="2-启动-JournalNode（三台机器）"><a href="#2-启动-JournalNode（三台机器）" class="headerlink" title="2. 启动 JournalNode（三台机器）"></a>2. 启动 JournalNode（三台机器）</h2><p>执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs --daemon start journalnode</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="3-启动-ZKFC"><a href="#3-启动-ZKFC" class="headerlink" title="3. 启动 ZKFC"></a>3. 启动 ZKFC</h2><p>Hadoop 安装目录：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/opt/module/hadoop-3.3.4/bin</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/hdfs --daemon start zkfc</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="4-在-master-上执行（仅需执行一次）"><a href="#4-在-master-上执行（仅需执行一次）" class="headerlink" title="4. 在 master 上执行（仅需执行一次）"></a>4. 在 master 上执行（仅需执行一次）</h2><p>启动 NameNode：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs --daemon start namenode</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="5-在-slave1-上执行（仅需执行一次）"><a href="#5-在-slave1-上执行（仅需执行一次）" class="headerlink" title="5. 在 slave1 上执行（仅需执行一次）"></a>5. 在 slave1 上执行（仅需执行一次）</h2><p>同步 NameNode 元数据：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs namenode -bootstrapStandby</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="6-在-master-上启动集群"><a href="#6-在-master-上启动集群" class="headerlink" title="6. 在 master 上启动集群"></a>6. 在 master 上启动集群</h2><p>执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./start-all.sh</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="故障转移测试"><a href="#故障转移测试" class="headerlink" title="故障转移测试"></a>故障转移测试</h1><p>关闭当前 Active NameNode：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 &lt;namenode_pid&gt;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="故障转移后的恢复"><a href="#故障转移后的恢复" class="headerlink" title="故障转移后的恢复"></a>故障转移后的恢复</h1><p>启动 HDFS：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./start-dfs.sh</span><br></pre></td></tr></table></figure>
-
-<p>切换 NameNode 为 Standby：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hdfs haadmin -transitionToStandby --forcemanual nn2</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>技术实践</category>
-        <category>系统运维</category>
-      </categories>
-      <tags>
-        <tag>安装配置</tag>
-        <tag>大数据</tag>
-        <tag>Hadoop</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git 学习——实践部分</title>
-    <url>/git_0.html</url>
+    <title>Hadoop搭建教程</title>
+    <url>/hadoop2.html</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
     .inline-note {
       display: inline-block;
@@ -960,17 +833,252 @@
       box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
     }
 </style>
+<p>在<a href="../hadoop1.html">Hadoop入门 </a>中，为大家简单介绍了 <a href="https://hadoop.apache.org/docs/">Hadoop</a> 。<br>在本文，我将为大家演示基于 linux 的 Hadoop 搭建。</p>
 <span id="more"></span>
-<p>git init 初始化<br>git add .  添加所有文件到Git管理<br>git config –global user.name &lt;此处输入你的GitHub用户名&gt;<br>git config –global user.email &lt;此处输入绑定的邮箱地址&gt;<br>git commit -m “my first commit” 提交并注释</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将本地仓库关联到远程仓库 origin，&lt;这里填入第2步中看到的远程仓库地址&gt;</span></span><br><span class="line">git remote add origin &lt;远程仓库地址&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从远程 master 分支拉取最新代码并在本地进行 rebase，保证提交历史整洁</span></span><br><span class="line">git pull --rebase origin master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将本地 master 分支的提交推送到远程 origin 仓库，并设置 upstream（后续可以直接 git push）</span></span><br><span class="line">git push -u origin master</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+
+<blockquote>
+<p><strong>本文所用软件版本:</strong></p>
+<p>CentOS 7<br>Vmware 16<br>Xshell 7<br>Xftp 7</p>
+</blockquote>
+<div class="note primary"><p><strong>在开始之前你需要提前下载：</strong></p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion">VMwareWworkstation Pro</a> 虚拟机管理软件</li>
+<li><input checked="" disabled="" type="checkbox"> <a href="https://mirrors.aliyun.com/centos/7/isos/x86_64/">CentOS 7 镜像</a>或者其他版本的镜像</li>
+</ul>
+<p>PS. 镜像下载时间超长</p>
+<p><strong>你需要提前准备:</strong></p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> 一台配置好 <em><a href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE">网络</a>&amp;主机名&amp;配置好xshell</em> 的虚拟机</li>
+</ul>
+</div>
+
+
+
+<hr>
+<p><span class = "inline-note" title ="小提示">本文将以初学者的视角进行详细讲解，左侧配有目录，大家按需选择阅读章节OuO。</p>
+<p>全文中的重点内容都采用与本条相同的样式，鼠标悬停即可显示简要说明，方便快速理解。</p>
+</span>
+
+<h1 id="VMware-软件使用"><a href="#VMware-软件使用" class="headerlink" title="VMware 软件使用"></a>VMware 软件使用</h1><p>具体从软件配置到创建虚拟机这里不再赘述，大家可以自行搜索，这里只展示我觉得需要注意的点</p>
+<h2 id="网络设置"><a href="#网络设置" class="headerlink" title="网络设置"></a>网络设置</h2><p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/image-20250814221946282.png"></p>
+<div class="tabs" id="vmware"><ul class="nav-tabs"><li class="tab active"><a href="#vmware-1">桥接模式</a></li><li class="tab"><a href="#vmware-2">NAT模式</a></li><li class="tab"><a href="#vmware-3">仅主机模式</a></li></ul><div class="tab-content"><div class="tab-pane active" id="vmware-1"><p>桥接模式会直接把虚拟机连接到物理网络，就像一台真实电脑。<br><strong>虚拟机直接使用主机所在的局域网IP</strong></p></div><div class="tab-pane" id="vmware-2"><p>NAT模式会通过主机共享网络连接，虚拟机和外网通信时由主机做中转。<br><strong>虚拟机通过主机的网络访问外网</strong></p></div><div class="tab-pane" id="vmware-3"><p>仅主机模式下，虚拟机只能和主机互通，不能访问外网。<br><strong>适合内网测试或安全环境</strong></p></div></div></div>
+
+<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><p>下载vmware-tools（可在vmware与主机之间复制粘贴）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt install open-vm-tools-desktop -y</span><br><span class="line">sudo reboot</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemcttl stop firewalld    --关闭防火墙</span><br><span class="line">systemctl disable firewalld    --永久关闭防火墙</span><br></pre></td></tr></table></figure>
+
+<h1 id="jdk配置"><a href="#jdk配置" class="headerlink" title="jdk配置"></a>jdk配置</h1><h2 id="1-使用Xftp传输压缩包并解压"><a href="#1-使用Xftp传输压缩包并解压" class="headerlink" title="1.使用Xftp传输压缩包并解压"></a>1.使用Xftp传输压缩包并解压</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@master opt]# pwd</span><br><span class="line">/opt</span><br><span class="line">[root@master opt]# mkdir module #解压后的位置</span><br><span class="line">[root@master opt]# mkdir software #压缩包</span><br><span class="line">[root@master opt]# cd software</span><br><span class="line">[root@master software]# ll</span><br><span class="line">total 1488592</span><br><span class="line">-rw-r--r--. 1 root root  87380462 Aug 27 10:59 apache-flume-1.11.0-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root  22347776 Aug 27 10:59 apache-hive-3.1.2-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root  14853274 Aug 27 10:59 apache-zookeeper-3.8.3-bin.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 730107476 Aug 27 10:59 hadoop-3.3.6.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 141600542 Aug 27 10:59 jdk-8u401-linux-x64.tar.gz</span><br><span class="line">-rw-r--r--. 1 root root 528015360 Aug 27 10:59 mysql-5.7.25-1.el7.x86_64.rpm-bundle.tar</span><br><span class="line">[root@master software]# tar -zvxf jdk-8u401-linux-x64.tar.gz -C ../module #解压jdk压缩包</span><br><span class="line">[root@master software]# tar -zvxf hadoop-3.3.6.tar.gz -C ../module/ #解压hadoop压缩包</span><br><span class="line">[root@master software]# cd ../module/                              </span><br><span class="line">[root@master module]# ll</span><br><span class="line">total 8</span><br><span class="line">drwxr-xr-x. 10 1000 1000 4096 Jun 18  2023 hadoop-3.3.6</span><br><span class="line">drwxr-x---.  8 root root 4096 Aug 27 11:02 jdk1.8.0_401</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-配置环境变量"><a href="#2-配置环境变量" class="headerlink" title="2.配置环境变量"></a>2.配置环境变量</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@master module]# cd jdk1.8.0_401/</span><br><span class="line">[root@master jdk1.8.0_401]# pwd</span><br><span class="line">/opt/module/jdk1.8.0_401</span><br><span class="line"></span><br><span class="line">[root@master module]# vi /etc/profile</span><br><span class="line"></span><br><span class="line">export JAVA_HOME=/opt/module/jdk1.8.0_401</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line"></span><br><span class="line">[root@master module]# source /etc/profile #刷新环境变量</span><br><span class="line">[root@master ~]# jps</span><br><span class="line">508 Jps</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="克隆三台虚拟机"><a href="#克隆三台虚拟机" class="headerlink" title="克隆三台虚拟机"></a>克隆三台虚拟机</h1><p>在克隆之前建议配置好<a href="#1.%E6%9B%B4%E6%94%B9hosts">hosts文件</a>为下一步做准备</p>
+<p>配置好后依次更改主机名</p>
+<p>这里不过多赘述</p>
+<h1 id="配置免密—SSH"><a href="#配置免密—SSH" class="headerlink" title="配置免密—SSH"></a>配置免密—SSH</h1><h2 id="1-更改hosts"><a href="#1-更改hosts" class="headerlink" title="1.更改hosts"></a>1.更改hosts</h2><p>三台虚拟机都更改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line">[ip-1] [hostname-1]</span><br><span class="line">[ip-2] [hostname-2]</span><br><span class="line">[ip-3] [hostname-3]</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-生成并传输密钥"><a href="#2-生成并传输密钥" class="headerlink" title="2.生成并传输密钥"></a>2.生成并传输密钥</h2><p>在<span class = "inline-note " title = "一定要更改好hosts后再生成">主节点生成密钥</span></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa #生成密钥</span><br><span class="line">ssh-copy-id [hostname-1&amp;2&amp;3] #传输密钥</span><br></pre></td></tr></table></figure>
+
+<p>输入 yes+对应主机的密码</p>
+<p>成功后可以使用 <code>ssh + [hostname-1&amp;2&amp;3]</code>进行测试</p>
+<p><code>exit</code>命令即可退出</p>
+<h1 id="配置Hadoop配置文件"><a href="#配置Hadoop配置文件" class="headerlink" title="配置Hadoop配置文件"></a>配置Hadoop配置文件</h1><p>以下配置文件的路径为<code>$hadoop_home/etc/hadoop/</code></p>
+<h2 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a>core-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://master:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>/root/software/hadoop-3.3.4/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span>    --hadoop路径</span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a>hdfs-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>master:50070<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="mapred-site-xml"><a href="#mapred-site-xml" class="headerlink" title="mapred-site.xml"></a>mapred-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.app.mapreduce.am.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.map.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.reduce.env<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>HADOOP_MAPRED_HOME=/root/software/hadoop-3.3.4<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="yarn-site-xml"><a href="#yarn-site-xml" class="headerlink" title="yarn-site.xml"></a>yarn-site.xml</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,</span><br><span class="line">HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,</span><br><span class="line">HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>master<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.resource.memory-mb<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">value</span>&gt;</span>4096<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="hadoop-env-sh"><a href="#hadoop-env-sh" class="headerlink" title="hadoop-env.sh"></a>hadoop-env.sh</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">export JAVA_HOME=$JAVA_HOME</span><br></pre></td></tr></table></figure>
+
+<h2 id="workers"><a href="#workers" class="headerlink" title="workers"></a>workers</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">三台机器的名字</span><br></pre></td></tr></table></figure>
+<h1 id="配置并刷新环境变量"><a href="#配置并刷新环境变量" class="headerlink" title="配置并刷新环境变量"></a>配置并刷新环境变量</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#hadoop</span><br><span class="line">export HADOOP_HOME=/root/software/hadoop-3.3.4</span><br><span class="line">export PATH=$PATH:$HADOOP_HOME/bin</span><br><span class="line"></span><br><span class="line">export HDFS_NAMENODE_USER=root</span><br><span class="line">export HDFS_DATANODE_USER=root</span><br><span class="line">export HDFS_SECONDARYNAMENODE_USER=root</span><br><span class="line">export YARN_RESOURCEMANAGER_USER=root</span><br><span class="line">export YARN_NODEMANAGER_USER=root</span><br></pre></td></tr></table></figure>
+<p>刷新环境变量   <code>source /etc/profile</code></p>
+<h1 id="SSH-传输"><a href="#SSH-传输" class="headerlink" title="SSH 传输"></a>SSH 传输</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">scp [-1246BCpqrv]  [-c cipher]  [-F ssh_config]  [-i identity_file]  [-l limit]  [-o ssh_option]  [-P port]  [-S program]  [[user@]host1:]file1 [...]  [[user@]host2:]file2</span><br></pre></td></tr></table></figure>
+<p>依次传输Hadoop、环境变量到其他虚拟机</p>
+<h1 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h1><p><span class = "inline-note" title ="注意都在主节点运行"><strong>Hadoop 启动与停止命令一览</strong></span></p>
+<h2 id="1-启动-停止所有守护进程"><a href="#1-启动-停止所有守护进程" class="headerlink" title="1. 启动&#x2F;停止所有守护进程"></a>1. 启动&#x2F;停止所有守护进程</h2><ul>
+<li><p><strong>启动所有守护进程</strong></p>
+<p><code>sbin/start-all.sh</code></p>
+</li>
+</ul>
+<p>启动内容包括：NameNode、Secondary NameNode、DataNode、ResourceManager、NodeManager</p>
+<ul>
+<li><p><strong>停止所有守护进程</strong></p>
+<p><code>sbin/stop-all.sh</code></p>
+</li>
+</ul>
+<p>停止内容包括：NameNode、Secondary NameNode、DataNode、ResourceManager、NodeManager</p>
+<hr>
+<h2 id="2-HDFS-守护进程"><a href="#2-HDFS-守护进程" class="headerlink" title="2. HDFS 守护进程"></a>2. HDFS 守护进程</h2><ul>
+<li><p><strong>启动 HDFS 守护进程</strong></p>
+<p><code>sbin/start-dfs.sh</code></p>
+</li>
+</ul>
+<p>启动内容：NameNode、Secondary NameNode、DataNode</p>
+<ul>
+<li><p><strong>停止 HDFS 守护进程</strong></p>
+<p><code>sbin/stop-dfs.sh</code></p>
+</li>
+</ul>
+<p>停止内容：NameNode、Secondary NameNode、DataNode</p>
+<h3 id="单独启动-停止-HDFS-守护进程"><a href="#单独启动-停止-HDFS-守护进程" class="headerlink" title="单独启动&#x2F;停止 HDFS 守护进程"></a>单独启动&#x2F;停止 HDFS 守护进程</h3><ul>
+<li><p><strong>NameNode</strong></p>
+<p><code>sbin/hadoop-daemons.sh start namenode</code></p>
+<p><code>sbin/hadoop-daemons.sh stop namenode</code></p>
+</li>
+<li><p><strong>DataNode</strong></p>
+<p><code>sbin/hadoop-daemons.sh start datanode</code></p>
+<p><code>sbin/hadoop-daemons.sh stop datanode</code></p>
+</li>
+<li><p><strong>Secondary NameNode</strong></p>
+<p><code>sbin/hadoop-daemons.sh start secondarynamenode</code></p>
+<p><code>sbin/hadoop-daemons.sh stop secondarynamenode</code></p>
+</li>
+</ul>
+<hr>
+<h2 id="3-YARN-守护进程"><a href="#3-YARN-守护进程" class="headerlink" title="3. YARN 守护进程"></a>3. YARN 守护进程</h2><ul>
+<li><p><strong>启动 YARN 守护进程</strong></p>
+<p><code>sbin/start-yarn.sh</code></p>
+</li>
+</ul>
+<p>启动内容：ResourceManager、NodeManager</p>
+<ul>
+<li><p><strong>停止 YARN 守护进程</strong></p>
+<p><code>sbin/stop-yarn.sh</code></p>
+</li>
+</ul>
+<p>停止内容：ResourceManager、NodeManager</p>
+<h3 id="单独启动-停止-YARN-守护进程"><a href="#单独启动-停止-YARN-守护进程" class="headerlink" title="单独启动&#x2F;停止 YARN 守护进程"></a>单独启动&#x2F;停止 YARN 守护进程</h3><ul>
+<li><p><strong>ResourceManager</strong></p>
+<p><code>sbin/yarn-daemon.sh start resourcemanager</code></p>
+<p>&#96;&#96;sbin&#x2F;yarn-daemon.sh stop resourcemanager&#96;</p>
+</li>
+<li><p><strong>NodeManager</strong></p>
+<p><code>sbin/yarn-daemons.sh start nodemanager</code></p>
+<p>&#96;&#96;sbin&#x2F;yarn-daemons.sh stop nodemanager&#96;</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-MapReduce-JobHistory-服务"><a href="#4-MapReduce-JobHistory-服务" class="headerlink" title="4. MapReduce JobHistory 服务"></a>4. MapReduce JobHistory 服务</h2><ul>
+<li><p><strong>启动 JobHistory</strong></p>
+<p><code>sbin/mr-jobhistory-daemon.sh start historyserver</code></p>
+</li>
+<li><p><strong>停止 JobHistory</strong></p>
+<p><code>sbin/mr-jobhistory-daemon.sh stop historyserver</code></p>
+</li>
+</ul>
+<h1 id="测试是否成功"><a href="#测试是否成功" class="headerlink" title="测试是否成功"></a>测试是否成功</h1><ul>
+<li><p>先使用jps查看进程，查看是否成功启动所有进程</p>
+</li>
+<li><p>打开网页 主节点的ip地址:9870<br>查看是否有web ui,在这里你能看到你所搭建的集群的基本信息</p>
+</li>
+</ul>
+]]></content>
       <categories>
-        <category>学习记录</category>
-        <category>编程语言</category>
+        <category>技术实践</category>
+        <category>系统运维</category>
       </categories>
       <tags>
-        <tag>git</tag>
-        <tag>版本控制</tag>
-        <tag>实践</tag>
+        <tag>大数据</tag>
+        <tag>Hadoop</tag>
+        <tag>linux</tag>
+        <tag>环境搭建</tag>
+        <tag>实战</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flutter安装报错记录</title>
+    <url>/errorlist_flutter.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
+    .inline-note {
+      display: inline-block;
+      background-color: #fffbe6;
+      color: #333;
+      border-left: 4px solid #f7c948;
+      padding: 0.2em 0.6em;
+      margin: 0 0.2em;
+      font-size: 0.95em;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-style: italic;
+      cursor: help;
+      transition: all 0.2s ease;
+    }
+
+    .inline-note:hover {
+      background-color: #fff3bf;
+      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
+    }
+</style>
+<p>flutter安装报错存档</p>
+<span id="more"></span>
+
+<h1 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h1><p>首先查看下报错信息：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">PS C:\Users\LJY&gt; flutter doctor</span><br><span class="line">Doctor summary (to see all details, run flutter doctor -v):</span><br><span class="line">[✓] Flutter (Channel stable, 3.38.3, on Microsoft Windows [版本 10.0.26100.4946], locale zh-CN)</span><br><span class="line">[✓] Windows Version (11 家庭中文版 64-bit, 24H2, 2009)</span><br><span class="line">[✓] Android toolchain - develop for Android devices (Android SDK version 36.1.0)</span><br><span class="line">[✓] Chrome - develop for the web</span><br><span class="line">[✓] Visual Studio - develop Windows apps (Visual Studio 生成工具 2022 17.14.16)</span><br><span class="line">[✓] Connected device (3 available)</span><br><span class="line">[!] Network resources</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://pub.dev/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://storage.googleapis.com/&quot;: Connection terminated during</span><br><span class="line">      handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://maven.google.com/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://cocoapods.org/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br><span class="line">    ✗ A cryptographic error occurred while checking &quot;https://github.com/&quot;: Connection terminated during handshake</span><br><span class="line">      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware</span><br><span class="line">      installed on your computer.</span><br></pre></td></tr></table></figure>
+
+<p>报错信息为：连接不上</p>
+<ul>
+<li><p>pub.dev</p>
+</li>
+<li><p>storage.googleapis.com</p>
+</li>
+<li><p>maven.google.com</p>
+</li>
+<li><p>cocoapods.org</p>
+</li>
+<li><p>github.com</p>
+</li>
+</ul>
+<p>环境为：Win11+Clash Verge全局+系统代理</p>
+<hr>
+<h1 id="解决流程"><a href="#解决流程" class="headerlink" title="解决流程"></a>解决流程</h1><p>首先使用浏览器查看，发现以上页面都能打开。</p>
+<p>感觉可能是终端没走代理的原因，就把代理调整为TUN模式</p>
+<p>使用终端curl github，成功返回页面</p>
+<p>使用终端curl <a href="https://maven.google.com/com/">https://maven.google.com/com/</a><br>→ 404 That’s an error.（但成功返回页面）</p>
+<p>AI的解释为</p>
+<blockquote>
+<p>因为 <strong>Flutter&#x2F;Gradle 访问 maven.google.com 不是访问 &#x2F;com&#x2F;</strong><br> 它访问的是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">https://maven.google.com/master-index.xml</span><br><span class="line">https://maven.google.com/com/android/tools/build/group-index.xml</span><br></pre></td></tr></table></figure>
+
+<p>并且这些文件需要：</p>
+<ul>
+<li><strong>TLS 1.2 &#x2F; TLS 1.3</strong></li>
+<li><strong>正确的 CA 证书链</strong></li>
+<li><strong>完整的网络握手</strong></li>
+</ul>
+<p>你之前出现的错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Connection terminated during handshake</span><br></pre></td></tr></table></figure>
+
+<p>这说明 <strong>TLS 握手阶段就失败了</strong><br> 而 curl 能成功 → 说明：</p>
+<ul>
+<li>你使用的 curl 内置证书是 OK 的</li>
+<li><strong>Java &#x2F; Flutter &#x2F; Dart 使用的证书链不 OK</strong></li>
+</ul>
+<p>❗ <strong>这类问题绝大多数都是 Windows 环境里的 CA 证书缺失&#x2F;损坏 或 代理&#x2F;杀软注入了假证书（MITM）</strong></p>
+</blockquote>
+<p>然后又去检查CA证书</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">PS C:\Users\LJY&gt; certutil -verifystore -user root</span><br><span class="line">root &quot;受信任的根证书颁发机构&quot;</span><br><span class="line">================ 证书 0 ================</span><br><span class="line">序列号: 0aa8d1ed03648306256b92500fd33b224a44f0ea</span><br><span class="line">颁发者: C=CN, O=堡塔, CN=堡塔</span><br><span class="line"> NotBefore: 2023/12/7 16:01</span><br><span class="line"> NotAfter: 2033/12/4 16:01</span><br><span class="line">使用者: C=CN, O=堡塔, CN=堡塔</span><br><span class="line">签名与公钥匹配</span><br><span class="line">根证书: 使用者与颁发者匹配</span><br><span class="line">证书哈希(sha1): 66f8b18f84b329d2aef25446d4e6c3dec0103a95</span><br><span class="line">没有密钥提供程序信息</span><br><span class="line">找不到解密的证书和私钥。</span><br><span class="line">已验证的颁发策略: 全部</span><br><span class="line">已验证的应用程序策略: 全部</span><br><span class="line">证书有效</span><br><span class="line">CertUtil: -verifystore 命令成功完成。</span><br></pre></td></tr></table></figure>
+
+<p>我看到了堡塔……然后把堡塔的证书删掉再次尝试，发现成功</p>
+<p>结束</p>
+<blockquote>
+<p>早知道就不拿电脑瞎折腾了，当初想试一下win安装堡塔来着QAQ</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>解决方案</category>
+        <category>系统问题</category>
+      </categories>
+      <tags>
+        <tag>安装配置</tag>
+        <tag>flutter</tag>
+        <tag>error</tag>
+        <tag>错误解决</tag>
       </tags>
   </entry>
   <entry>
@@ -1079,9 +1187,10 @@
       </tags>
   </entry>
   <entry>
-    <title>Pro Git学习记录</title>
-    <url>/git_progit.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
+    <title>Git 学习——基础篇</title>
+    <url>/git_1.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>关于git的学习记录——基础篇 oio</p>
+<style>
     .inline-note {
       display: inline-block;
       background-color: #fffbe6;
@@ -1103,89 +1212,64 @@
     }
 </style>
 <span id="more"></span>
-<h2 id="文件的三种状态"><a href="#文件的三种状态" class="headerlink" title="文件的三种状态"></a>文件的三种状态</h2><p><strong>已提交（committed）</strong> 表示该文件已经被安全地保存在本地数据库中了。<br><strong>已修改（modified）</strong> 表示修改了某个文件，但还没有提交保存。<br><strong>已暂存（staged）</strong> 表示把已修改的文件放在下次提交时要保存的清单中。</p>
-<p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202512171533481.png" alt="图1-1.工作目录，暂存目录，以及本地仓库"></p>
-<blockquote>
-<p>暂存区域只不过是个简单的文件，一般都放在 Git 目录中。有时候人们会把这个文件叫做索引文件，不过标准说法还是叫暂存区域</p>
-</blockquote>
-<p><strong>基本的 Git 工作流程如下：</strong></p>
-<ol>
-<li>在工作目录中修改某些文件。</li>
-<li>对修改后的文件进行快照，然后保存到暂存区域。</li>
-<li>提交更新，将保存在暂存区域的文件快照永久转储到 Git 目录中。</li>
-</ol>
-<h2 id="初次运行Git的配置"><a href="#初次运行Git的配置" class="headerlink" title="初次运行Git的配置"></a>初次运行Git的配置</h2><p> 查看 Git 配置：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --list # 查看当前仓库及全局配置 </span><br><span class="line">git config --global --list # 查看全局配置</span><br></pre></td></tr></table></figure>
-<h3 id="用户信息"><a href="#用户信息" class="headerlink" title="用户信息"></a>用户信息</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置全局用户名</span></span><br><span class="line">git config --global user.name &quot;你的名字&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置全局邮箱</span></span><br><span class="line">git config --global user.email &quot;你的邮箱&quot;</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><code>--global</code>：表示全局设置，作用于所有仓库；去掉就是只对当前仓库生效。</li>
-</ul>
-<h3 id="文本编辑器"><a href="#文本编辑器" class="headerlink" title="文本编辑器"></a>文本编辑器</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global core.editor 编辑器命令/位置</span><br></pre></td></tr></table></figure>
-<h3 id="差异分析工具"><a href="#差异分析工具" class="headerlink" title="差异分析工具"></a>差异分析工具</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br></pre></td></tr></table></figure>
-<p>Git 可以理解 kdiff3，tkdiff，meld，xxdiff，emerge，vimdiff，gvimdiff，ecmerge，和 opendiff 等合并工具的输出信息</p>
+<blockquote>
+<p>学习网站：<a href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git Branching</a></p>
+</blockquote>
+<p>Git 希望提交记录尽可能地轻量，因此在你每次进行提交时，它并不会盲目地复制整个目录。条件允许的情况下，它会将当前版本与仓库中的上一个版本进行对比，并把所有的差异打包到一起作为一个提交记录。</p>
+<h1 id="Git-主要命令"><a href="#Git-主要命令" class="headerlink" title="Git 主要命令"></a>Git 主要命令</h1><p><code>Git Commit</code>：提交新记录，添加新节点</p>
+<p><code>Git Branch &lt;name&gt;</code>：基于这个提交及他所有的parent新建分支<em>仅新建分支</em></p>
+<blockquote>
+<p><code>main*</code>代表你当前在main分支下</p>
+</blockquote>
+<p><code>git checkout &lt;name&gt;</code>：切换分支</p>
+<blockquote>
+<p>创建一个新的分支同时切换到新创建的分支的话，可以通过 <code>git checkout -b &lt;your-branch-name&gt;</code></p>
+<blockquote>
+<p><em>新版本使用</em><code>git</code> <code>switch</code> [<em><options></em>] [<code>--no-guess</code>] <em><branch></em></p>
+</blockquote>
+</blockquote>
+<p><code>git merge &lt;your-branch-name&gt;</code> 合并分支<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202511181543273.png?40l" alt="git merge"></p>
+<p><code>git rebase &lt;your-branch-name&gt; [your-rebase-name]</code>线性合并分支<br>Rebase 实际上就是取出一系列的提交记录，“复制”它们，然后在另外一个地方逐个的放下去。<br>Rebase 的优势就是可以创造更线性的提交历史。<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202511181548515.png?40l" alt="git rebase"></p>
+<hr>
+<h1 id="Git-特性"><a href="#Git-特性" class="headerlink" title="Git 特性"></a>Git 特性</h1><h2 id="关于HEAD变量"><a href="#关于HEAD变量" class="headerlink" title="关于HEAD变量:"></a>关于<code>HEAD</code>变量:</h2><p>通过<code>git chekout &lt;name&gt;</code>命令可以切换<code>HEAD</code>的指向</p>
+<blockquote>
+<p> <em>可以<code>HEAD</code>→<code>main</code> →<code>C4</code>（<code>main</code>→<code>C4</code>）</em><br><em>也可以<code>HEAD</code>→<code>C4</code></em></p>
+</blockquote>
+<h2 id="相对引用——"><a href="#相对引用——" class="headerlink" title="相对引用——^,~"></a>相对引用——<code>^</code>,<code>~</code></h2><p><code>git log</code> 查看提交记录的哈希值</p>
+<p>其哈希值可以只输入前几个字母进行匹配<br>但是这样太麻烦了</p>
+<p><strong>^</strong>: 使用 <code>^</code> 向上移动 1 个提交记录 (父节点，且可叠用。<code>HEAD^</code>,<code>main^^</code>)<br><span class = "inline-note" title ="小提示"><br>当<code>^</code>后面加数字时，表示的是移动到他的第几个<code>parent</code>（当我们使用<code>git merge</code>命令时可能会有一个以上的parent）<br></span><br><strong>~</strong>: 使用 <code>~&lt;num&gt;</code> 向上移动多个提交记录，如 <code>~3</code>,<code>HEAD~3</code></p>
+<p>两个符号可以链式操作，例如<code>git checkout HEAD~^2~2</code><br>结合之前的命令实用：<br><strong><code>git branch -f main HEAD~3</code>：将 main 分支强制指向 HEAD 的第 3 级 parent 提交。</strong></p>
+<h2 id="撤销变更-——-git-reset和git-revert"><a href="#撤销变更-——-git-reset和git-revert" class="headerlink" title="撤销变更 —— git reset和git revert"></a>撤销变更 —— <code>git reset</code>和<code>git revert</code></h2><p><code>git reset &lt;参数&gt;</code><br>在reset后， 撤销部分所做的变更还在，但是处于未加入暂存区状态。<strong>本地常用</strong><br><code>git revert &lt;参数&gt;</code><br>把撤销之前的部分作为新分支提交<strong>远程常用</strong></p>
+<hr>
+<h1 id="整理提交记录"><a href="#整理提交记录" class="headerlink" title="整理提交记录"></a>整理提交记录</h1><h2 id="复制git-cherry-pick"><a href="#复制git-cherry-pick" class="headerlink" title="复制git cherry-pick"></a>复制<code>git cherry-pick</code></h2><p><code>git cherry-pick &lt;提交号&gt;...</code><br>将一些提交<strong>复制</strong>到当前所在的位置（<code>HEAD</code>）下面</p>
+<h2 id="交互式的-rebase"><a href="#交互式的-rebase" class="headerlink" title="交互式的 rebase"></a>交互式的 rebase</h2><p><code>git rebase -i HEAD~4</code><br>会有一个交互式的页面供你进行<strong>排序、删除、合并</strong><br>在你完成后，会将处理好的分支放在当前分支下</p>
+<h2 id="只取一个提交记录（实战结合）"><a href="#只取一个提交记录（实战结合）" class="headerlink" title="只取一个提交记录（实战结合）"></a>只取一个提交记录（实战结合）</h2><p>通过以上两个命令把修改bug中最后解决bug的提交记录复制或移动到main分支下</p>
+<h1 id="提交的技巧"><a href="#提交的技巧" class="headerlink" title="提交的技巧"></a>提交的技巧</h1><blockquote>
+<p>当你希望对之前的提交记录进行小小的修改，这里有两个方法。</p>
+</blockquote>
+<p><code>git commit --amend</code>追加提交<br>将不会重复提交而是修改之前的提交于同一位置</p>
+<p>可以先移动顺序，将要修改的放前面来，修改后再排序放回去。最后合并main分支。</p>
+<p>使用<code>git cherry-pick</code>一步步复制修改</p>
+<h1 id="Git-tag-——-标签-锚点"><a href="#Git-tag-——-标签-锚点" class="headerlink" title="Git tag —— 标签&#x2F;锚点"></a>Git tag —— 标签&#x2F;锚点</h1><p><code>git tag &lt;标签名&gt; &lt;指向位置&gt;</code><br><em>可以通过<code>git check</code>移动到标签</em></p>
+<p><code>git describe </code>可以 <strong>描述</strong>离你最近的锚点（也就是标签)</p>
+<p>语法：<code>git describe &lt;ref&gt;</code>^1<br>返回值:<code>&lt;tag&gt;-&lt;numCommits&gt;-g&lt;hash&gt;</code>^2</p>
+<ol>
+<li><p><code>&lt;ref&gt;</code> 可以是任何能被 Git 识别成提交记录的引用，如果你没有指定的话，Git 会使用你目前所在的位置（<code>HEAD</code>）。</p>
+</li>
+<li><p><code>tag</code> 表示的是离 <code>ref</code> 最近的标签， <br><code>numCommits</code> 是表示这个 <code>ref</code> 与 <code>tag</code> 相差有多少个提交记录，<br><code>hash</code> 表示的是你所给定的 <code>ref</code> 所表示的提交记录哈希值的前几位。</p>
+</li>
+</ol>
+<h1 id="多分支-rebase"><a href="#多分支-rebase" class="headerlink" title="多分支 rebase"></a>多分支 rebase</h1><p> <code>git rebase &lt;1&gt; &lt;2&gt;</code>1→2<br>2分支中所有的提交记录都将合并到1分支之下</p>
 ]]></content>
       <categories>
         <category>学习记录</category>
-        <category>阅读记录</category>
+        <category>编程语言</category>
       </categories>
       <tags>
         <tag>git</tag>
         <tag>版本控制</tag>
-        <tag>读书笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Redis安装修改密码</title>
-    <url>/errorlist_redis.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
-    .inline-note {
-      display: inline-block;
-      background-color: #fffbe6;
-      color: #333;
-      border-left: 4px solid #f7c948;
-      padding: 0.2em 0.6em;
-      margin: 0 0.2em;
-      font-size: 0.95em;
-      border-radius: 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      font-style: italic;
-      cursor: help;
-      transition: all 0.2s ease;
-    }
-
-    .inline-note:hover {
-      background-color: #fff3bf;
-      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
-    }
-</style>
-<span id="more"></span>
-
-
-
-<h1 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h1><p>官方docker容器配置文件设置——修改密码<br><a href="https://hub.docker.com/_/redis">docker-redis镜像</a><br>根据官方文档中的：</p>
-<blockquote>
-<h4 id="此外，如果您想使用自己的-redis-conf-文件……"><a href="#此外，如果您想使用自己的-redis-conf-文件……" class="headerlink" title="此外，如果您想使用自己的 redis.conf 文件……"></a>此外，如果您想使用自己的 redis.conf 文件……</h4><p>您可以创建自己的 Dockerfile，将上下文中的 redis.conf 添加到 &#x2F;data&#x2F; 中，如下所示。</p>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> redis</span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> redis.conf /usr/local/etc/redis/redis.conf</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
-
-<p>或者，您也可以使用选项来指定类似的内容<code>docker run</code>。</p>
-<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">docker run -v /myredis/conf:/usr/local/etc/redis --name myredis redis redis-server /usr/local/etc/redis/redis.conf</span></span><br></pre></td></tr></table></figure>
-
-<p><code>/myredis/conf/</code>本地目录下有你的<code>redis.conf</code>文件。使用此方法意味着你无需为 Redis 容器编写 Dockerfile。</p>
-<p>映射目录应该是可写的，因为根据配置和操作模式，Redis 可能需要创建额外的配置文件或重写现有的配置文件。</p>
-</blockquote>
-<p>这里我选择了第一种方法</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建Dockerfile 和 自定义的redis配置文件</span></span><br><span class="line">lan@lan123ubuntu:~$ <span class="built_in">mkdir</span> myredis </span><br><span class="line">lan@lan123ubuntu:~$ <span class="built_in">cd</span> myredis/ </span><br><span class="line">lan@lan123ubuntu:~/myredis$ vi redis.conf</span><br><span class="line">lan@lan123ubuntu:~/myredis$ vi Dockerfile </span><br><span class="line"></span><br><span class="line">FROM redis</span><br><span class="line">COPY redis.conf /usr/local/etc/redis/redis.conf</span><br><span class="line">CMD [ <span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment">#构建自定义Redis镜像</span></span><br><span class="line">lan@lan123ubuntu:~/myredis$ docker build -t myredis:custom . </span><br><span class="line">DEPRECATED: The legacy builder is deprecated and will be removed <span class="keyword">in</span> a future release. </span><br><span class="line">Install the buildx component to build images with BuildKit: https://docs.docker.com/go/buildx/ </span><br><span class="line">Sending build context to Docker daemon 3.072kB </span><br><span class="line">Step 1/3 : FROM redis:latest </span><br><span class="line">---&gt; 1c390e3bb5cb </span><br><span class="line">Step 2/3 : COPY redis.conf /usr/local/etc/redis/redis.conf </span><br><span class="line">---&gt; 5752eb06dda3 </span><br><span class="line">Step 3/3 : CMD [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span>] </span><br><span class="line">---&gt; Running <span class="keyword">in</span> 8f635c9589f5 </span><br><span class="line">---&gt; Removed intermediate container 8f635c9589f5 </span><br><span class="line">---&gt; 2988385cf884 </span><br><span class="line">Successfully built 2988385cf884 </span><br><span class="line">Successfully tagged myredis:custom </span><br><span class="line"><span class="comment">#启动镜像并设置开机自启</span></span><br><span class="line">docker run -d \</span><br><span class="line">  --name myredis \</span><br><span class="line">  -v redis-data:/data \</span><br><span class="line">  -p 6379:6379 \</span><br><span class="line">  --restart unless-stopped \</span><br><span class="line">  myredis:custom</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>解决方案</category>
-        <category>系统问题</category>
-      </categories>
-      <tags>
-        <tag>error</tag>
-        <tag>错误解决</tag>
-        <tag>redis</tag>
-        <tag>docker</tag>
-        <tag>配置</tag>
+        <tag>入门</tag>
       </tags>
   </entry>
   <entry>
@@ -1216,6 +1300,154 @@
         <tag>ros</tag>
         <tag>ros1</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu24.04使用记录</title>
+    <url>/ubuntu_demo.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p></style></p>
+<span id="more"></span>
+
+<h1 id="网卡配置"><a href="#网卡配置" class="headerlink" title="网卡配置"></a>网卡配置</h1><ol>
+<li><p>如<a href="https://blog.lanouo.xyz/hadoop2.html#VMware-%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8">Hadoop搭建教程</a>中网络设置中桥接配置部分</p>
+</li>
+<li><p><strong>虚拟机</strong>运行<code>ifconfig</code>命令 <strong>主机</strong>运行<code>ipconfig</code>命令查看并获取信息<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423195100401.png" alt="虚拟机查看网卡信息"><br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423194638210.png" alt="image-20260423194638146"></p>
+</li>
+<li><p>根据以上信息配置网卡文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lan@lan-VMware-Virtual-Platform:~$ <span class="built_in">cd</span> /etc/netplan/</span><br><span class="line">lan@lan-VMware-Virtual-Platform:/etc/netplan$ <span class="built_in">sudo</span> nano 50-cloud-init.yaml </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423195450008.png" alt="image-20260423195449938"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> netplan apply</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>这样就完成了网络的基础配置，可以<code>ping www.baidu.com</code>试一下，之后是一些可选项</p>
+<h2 id="安装OpenSSH-Sever（远程连接配置）"><a href="#安装OpenSSH-Sever（远程连接配置）" class="headerlink" title="安装OpenSSH Sever（远程连接配置）"></a>安装OpenSSH Sever（远程连接配置）</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update &amp;&amp; sudo apt install -y openssh-server</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="更换镜像源"><a href="#更换镜像源" class="headerlink" title="更换镜像源"></a>更换镜像源</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo bash -c &#x27;cat &gt; /etc/apt/sources.list&#x27; &lt;&lt;EOF</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-updates main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-backports main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-security main restricted universe multiverse</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">sudo apt clean</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade -y</span><br><span class="line">sudo apt install vim -y</span><br><span class="line">lan@lan-VMware-Virtual-Platform:~$ </span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>学习记录</category>
+        <category>系统运维</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>ubuntu</tag>
+        <tag>系统配置</tag>
+        <tag>网络配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VSCode系编辑器使用技巧</title>
+    <url>/vscode_trick.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
+    .inline-note {
+      display: inline-block;
+      background-color: #fffbe6;
+      color: #333;
+      border-left: 4px solid #f7c948;
+      padding: 0.2em 0.6em;
+      margin: 0 0.2em;
+      font-size: 0.95em;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-style: italic;
+      cursor: help;
+      transition: all 0.2s ease;
+    }
+
+    .inline-note:hover {
+      background-color: #fff3bf;
+      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
+    }
+</style>
+<p>一些小技巧 (o-ωｑ)).oO 困</p>
+<span id="more"></span>
+
+<h2 id="关于代码折叠"><a href="#关于代码折叠" class="headerlink" title="关于代码折叠"></a>关于代码折叠</h2><table>
+<thead>
+<tr>
+<th>语言</th>
+<th>区域启动</th>
+<th>终止区域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>蝙蝠</td>
+<td><code>::#region</code>或者<code>REM #region</code></td>
+<td><code>::#endregion</code>或者<code>REM #endregion</code></td>
+</tr>
+<tr>
+<td>C#</td>
+<td><code>#region</code></td>
+<td><code>#endregion</code></td>
+</tr>
+<tr>
+<td>C&#x2F;C++</td>
+<td><code>#pragma region</code></td>
+<td><code>#pragma endregion</code></td>
+</tr>
+<tr>
+<td>CSS&#x2F;Less&#x2F;SCSS</td>
+<td><code>/*#region*/</code></td>
+<td><code>/*#endregion*/</code></td>
+</tr>
+<tr>
+<td>Coffeescript</td>
+<td><code>#region</code></td>
+<td><code>#endregion</code></td>
+</tr>
+<tr>
+<td>F#</td>
+<td><code>//#region</code>或者<code>(#_region)</code></td>
+<td><code>//#endregion</code>或者<code>(#_endregion)</code></td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>//#region</code>或者<code>//&lt;editor-fold&gt;</code></td>
+<td><code>//#endregion</code>或者<code>//&lt;/editor-fold&gt;</code></td>
+</tr>
+<tr>
+<td>Markdown</td>
+<td><code>&lt;!-- #region --&gt;</code></td>
+<td><code>&lt;!-- #endregion --&gt;</code></td>
+</tr>
+<tr>
+<td>Perl5</td>
+<td><code>#region</code>或者<code>=pod</code></td>
+<td><code>#endregion</code>或者<code>=cut</code></td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>#region</code></td>
+<td><code>#endregion</code></td>
+</tr>
+<tr>
+<td>PowerShell</td>
+<td><code>#region</code></td>
+<td><code>#endregion</code></td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>#region</code>或者<code># region</code></td>
+<td><code>#endregion</code>或者<code># endregion</code></td>
+</tr>
+<tr>
+<td>TypeScript&#x2F;JavaScript</td>
+<td><code>//#region</code></td>
+<td><code>//#endregion</code></td>
+</tr>
+<tr>
+<td>Visual Basic</td>
+<td><code>#Region</code></td>
+<td><code>#End Region</code></td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>工具使用</category>
+        <category>编辑器</category>
+      </categories>
   </entry>
   <entry>
     <title>ros安装与基本配置</title>
@@ -1330,39 +1562,142 @@
       </tags>
   </entry>
   <entry>
-    <title>Ubuntu24.04使用记录</title>
-    <url>/ubuntu_demo.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p></style></p>
+    <title>Redis安装修改密码</title>
+    <url>/errorlist_redis.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
+    .inline-note {
+      display: inline-block;
+      background-color: #fffbe6;
+      color: #333;
+      border-left: 4px solid #f7c948;
+      padding: 0.2em 0.6em;
+      margin: 0 0.2em;
+      font-size: 0.95em;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-style: italic;
+      cursor: help;
+      transition: all 0.2s ease;
+    }
+
+    .inline-note:hover {
+      background-color: #fff3bf;
+      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
+    }
+</style>
 <span id="more"></span>
 
-<h1 id="网卡配置"><a href="#网卡配置" class="headerlink" title="网卡配置"></a>网卡配置</h1><ol>
-<li><p>如<a href="https://blog.lanouo.xyz/hadoop2.html#VMware-%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8">Hadoop搭建教程</a>中网络设置中桥接配置部分</p>
-</li>
-<li><p><strong>虚拟机</strong>运行<code>ifconfig</code>命令 <strong>主机</strong>运行<code>ipconfig</code>命令查看并获取信息<br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423195100401.png" alt="虚拟机查看网卡信息"><br><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423194638210.png" alt="image-20260423194638146"></p>
-</li>
-<li><p>根据以上信息配置网卡文件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lan@lan-VMware-Virtual-Platform:~$ <span class="built_in">cd</span> /etc/netplan/</span><br><span class="line">lan@lan-VMware-Virtual-Platform:/etc/netplan$ <span class="built_in">sudo</span> nano 50-cloud-init.yaml </span><br></pre></td></tr></table></figure>
 
-<p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/20260423195450008.png" alt="image-20260423195449938"></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> netplan apply</span><br></pre></td></tr></table></figure></li>
+
+<h1 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h1><p>官方docker容器配置文件设置——修改密码<br><a href="https://hub.docker.com/_/redis">docker-redis镜像</a><br>根据官方文档中的：</p>
+<blockquote>
+<h4 id="此外，如果您想使用自己的-redis-conf-文件……"><a href="#此外，如果您想使用自己的-redis-conf-文件……" class="headerlink" title="此外，如果您想使用自己的 redis.conf 文件……"></a>此外，如果您想使用自己的 redis.conf 文件……</h4><p>您可以创建自己的 Dockerfile，将上下文中的 redis.conf 添加到 &#x2F;data&#x2F; 中，如下所示。</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> redis</span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> redis.conf /usr/local/etc/redis/redis.conf</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<p>或者，您也可以使用选项来指定类似的内容<code>docker run</code>。</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">docker run -v /myredis/conf:/usr/local/etc/redis --name myredis redis redis-server /usr/local/etc/redis/redis.conf</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/myredis/conf/</code>本地目录下有你的<code>redis.conf</code>文件。使用此方法意味着你无需为 Redis 容器编写 Dockerfile。</p>
+<p>映射目录应该是可写的，因为根据配置和操作模式，Redis 可能需要创建额外的配置文件或重写现有的配置文件。</p>
+</blockquote>
+<p>这里我选择了第一种方法</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建Dockerfile 和 自定义的redis配置文件</span></span><br><span class="line">lan@lan123ubuntu:~$ <span class="built_in">mkdir</span> myredis </span><br><span class="line">lan@lan123ubuntu:~$ <span class="built_in">cd</span> myredis/ </span><br><span class="line">lan@lan123ubuntu:~/myredis$ vi redis.conf</span><br><span class="line">lan@lan123ubuntu:~/myredis$ vi Dockerfile </span><br><span class="line"></span><br><span class="line">FROM redis</span><br><span class="line">COPY redis.conf /usr/local/etc/redis/redis.conf</span><br><span class="line">CMD [ <span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span> ]</span><br><span class="line"></span><br><span class="line"><span class="comment">#构建自定义Redis镜像</span></span><br><span class="line">lan@lan123ubuntu:~/myredis$ docker build -t myredis:custom . </span><br><span class="line">DEPRECATED: The legacy builder is deprecated and will be removed <span class="keyword">in</span> a future release. </span><br><span class="line">Install the buildx component to build images with BuildKit: https://docs.docker.com/go/buildx/ </span><br><span class="line">Sending build context to Docker daemon 3.072kB </span><br><span class="line">Step 1/3 : FROM redis:latest </span><br><span class="line">---&gt; 1c390e3bb5cb </span><br><span class="line">Step 2/3 : COPY redis.conf /usr/local/etc/redis/redis.conf </span><br><span class="line">---&gt; 5752eb06dda3 </span><br><span class="line">Step 3/3 : CMD [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/etc/redis/redis.conf&quot;</span>] </span><br><span class="line">---&gt; Running <span class="keyword">in</span> 8f635c9589f5 </span><br><span class="line">---&gt; Removed intermediate container 8f635c9589f5 </span><br><span class="line">---&gt; 2988385cf884 </span><br><span class="line">Successfully built 2988385cf884 </span><br><span class="line">Successfully tagged myredis:custom </span><br><span class="line"><span class="comment">#启动镜像并设置开机自启</span></span><br><span class="line">docker run -d \</span><br><span class="line">  --name myredis \</span><br><span class="line">  -v redis-data:/data \</span><br><span class="line">  -p 6379:6379 \</span><br><span class="line">  --restart unless-stopped \</span><br><span class="line">  myredis:custom</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>解决方案</category>
+        <category>系统问题</category>
+      </categories>
+      <tags>
+        <tag>error</tag>
+        <tag>错误解决</tag>
+        <tag>redis</tag>
+        <tag>docker</tag>
+        <tag>配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Pro Git学习记录</title>
+    <url>/git_progit.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
+    .inline-note {
+      display: inline-block;
+      background-color: #fffbe6;
+      color: #333;
+      border-left: 4px solid #f7c948;
+      padding: 0.2em 0.6em;
+      margin: 0 0.2em;
+      font-size: 0.95em;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-style: italic;
+      cursor: help;
+      transition: all 0.2s ease;
+    }
+
+    .inline-note:hover {
+      background-color: #fff3bf;
+      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
+    }
+</style>
+<span id="more"></span>
+<h2 id="文件的三种状态"><a href="#文件的三种状态" class="headerlink" title="文件的三种状态"></a>文件的三种状态</h2><p><strong>已提交（committed）</strong> 表示该文件已经被安全地保存在本地数据库中了。<br><strong>已修改（modified）</strong> 表示修改了某个文件，但还没有提交保存。<br><strong>已暂存（staged）</strong> 表示把已修改的文件放在下次提交时要保存的清单中。</p>
+<p><img src="https://raw.githubusercontent.com/lanOAO/blog_img/main/202512171533481.png" alt="图1-1.工作目录，暂存目录，以及本地仓库"></p>
+<blockquote>
+<p>暂存区域只不过是个简单的文件，一般都放在 Git 目录中。有时候人们会把这个文件叫做索引文件，不过标准说法还是叫暂存区域</p>
+</blockquote>
+<p><strong>基本的 Git 工作流程如下：</strong></p>
+<ol>
+<li>在工作目录中修改某些文件。</li>
+<li>对修改后的文件进行快照，然后保存到暂存区域。</li>
+<li>提交更新，将保存在暂存区域的文件快照永久转储到 Git 目录中。</li>
 </ol>
-<p>这样就完成了网络的基础配置，可以<code>ping www.baidu.com</code>试一下，之后是一些可选项</p>
-<h2 id="安装OpenSSH-Sever（远程连接配置）"><a href="#安装OpenSSH-Sever（远程连接配置）" class="headerlink" title="安装OpenSSH Sever（远程连接配置）"></a>安装OpenSSH Sever（远程连接配置）</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update &amp;&amp; sudo apt install -y openssh-server</span><br></pre></td></tr></table></figure>
+<h2 id="初次运行Git的配置"><a href="#初次运行Git的配置" class="headerlink" title="初次运行Git的配置"></a>初次运行Git的配置</h2><p> 查看 Git 配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --list # 查看当前仓库及全局配置 </span><br><span class="line">git config --global --list # 查看全局配置</span><br></pre></td></tr></table></figure>
+<h3 id="用户信息"><a href="#用户信息" class="headerlink" title="用户信息"></a>用户信息</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置全局用户名</span></span><br><span class="line">git config --global user.name &quot;你的名字&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置全局邮箱</span></span><br><span class="line">git config --global user.email &quot;你的邮箱&quot;</span><br></pre></td></tr></table></figure>
 
-
-
-<h2 id="更换镜像源"><a href="#更换镜像源" class="headerlink" title="更换镜像源"></a>更换镜像源</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo bash -c &#x27;cat &gt; /etc/apt/sources.list&#x27; &lt;&lt;EOF</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-updates main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-backports main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ noble-security main restricted universe multiverse</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">sudo apt clean</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade -y</span><br><span class="line">sudo apt install vim -y</span><br><span class="line">lan@lan-VMware-Virtual-Platform:~$ </span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><code>--global</code>：表示全局设置，作用于所有仓库；去掉就是只对当前仓库生效。</li>
+</ul>
+<h3 id="文本编辑器"><a href="#文本编辑器" class="headerlink" title="文本编辑器"></a>文本编辑器</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global core.editor 编辑器命令/位置</span><br></pre></td></tr></table></figure>
+<h3 id="差异分析工具"><a href="#差异分析工具" class="headerlink" title="差异分析工具"></a>差异分析工具</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global merge.tool vimdiff</span><br></pre></td></tr></table></figure>
+<p>Git 可以理解 kdiff3，tkdiff，meld，xxdiff，emerge，vimdiff，gvimdiff，ecmerge，和 opendiff 等合并工具的输出信息</p>
 ]]></content>
       <categories>
         <category>学习记录</category>
-        <category>系统运维</category>
+        <category>阅读记录</category>
       </categories>
       <tags>
-        <tag>linux</tag>
-        <tag>ubuntu</tag>
-        <tag>系统配置</tag>
-        <tag>网络配置</tag>
+        <tag>git</tag>
+        <tag>版本控制</tag>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>YOLO入门</title>
+    <url>/yolo_learn.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>这里应该有一条简介才对&#x2F;_ \</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">新建环境</span><br><span class="line">github下载源码</span><br><span class="line">pip install -e .</span><br><span class="line">mss</span><br><span class="line">jupyterlab</span><br></pre></td></tr></table></figure>
+<p>demo1</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> ultralytics <span class="keyword">import</span> YOLO  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 加载模型  </span></span><br><span class="line">model = YOLO(<span class="string">&quot;yolov8n.pt&quot;</span>,task = <span class="string">&quot;detect&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 预测图片  </span></span><br><span class="line">results = model.predict(source=<span class="string">&quot;screen&quot;</span>,save = <span class="literal">True</span>) </span><br><span class="line"><span class="comment"># screen屏幕。0摄像头，或是一个明确的地址  </span></span><br><span class="line"><span class="comment"># save参数确定为True。保存检测到的结果  </span></span><br><span class="line"><span class="comment"># conf0.25 越低，检测到的框越多</span></span><br><span class="line"><span class="comment"># ioc0.7 与conf相反</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;检测完成&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip install pyqt5==5.15.7  </span><br><span class="line">pip install labelImg==1.8.6</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>学习记录</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>win11应用快捷方式图标变白解决方案</title>
+    <url>/win11_linkerror.html</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>故障解决存档</p>
+<span id="more"></span>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">taskkill /f /im explorer.exe</span><br><span class="line">CD /d %userprofile%\AppData\Local</span><br><span class="line">DEL IconCache.db /a</span><br><span class="line">start explorer.exe</span><br><span class="line">cho 执行完成</span><br></pre></td></tr></table></figure>
+<p>将上述文件保存为批处理文件（bat）即可</p>
+]]></content>
+      <categories>
+        <category>解决方案</category>
+        <category>系统问题</category>
+      </categories>
+      <tags>
+        <tag>win11</tag>
       </tags>
   </entry>
   <entry>
@@ -1844,161 +2179,6 @@
       </tags>
   </entry>
   <entry>
-    <title>YOLO入门</title>
-    <url>/yolo_learn.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>这里应该有一条简介才对&#x2F;_ \</p>
-<span id="more"></span>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">新建环境</span><br><span class="line">github下载源码</span><br><span class="line">pip install -e .</span><br><span class="line">mss</span><br><span class="line">jupyterlab</span><br></pre></td></tr></table></figure>
-<p>demo1</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> ultralytics <span class="keyword">import</span> YOLO  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 加载模型  </span></span><br><span class="line">model = YOLO(<span class="string">&quot;yolov8n.pt&quot;</span>,task = <span class="string">&quot;detect&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 预测图片  </span></span><br><span class="line">results = model.predict(source=<span class="string">&quot;screen&quot;</span>,save = <span class="literal">True</span>) </span><br><span class="line"><span class="comment"># screen屏幕。0摄像头，或是一个明确的地址  </span></span><br><span class="line"><span class="comment"># save参数确定为True。保存检测到的结果  </span></span><br><span class="line"><span class="comment"># conf0.25 越低，检测到的框越多</span></span><br><span class="line"><span class="comment"># ioc0.7 与conf相反</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;检测完成&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pip install pyqt5==5.15.7  </span><br><span class="line">pip install labelImg==1.8.6</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>学习记录</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>cs168</title>
-    <url>/cs168.html</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="1f49c8d06191edb86eb10204801734f039a16063e41ec84c7ae21b5e88fc74a7">74ba0eca8a8cd3288e0cffe716599942e1d03166f865dd2a5f65d1390c48a9d43d0240b5b8c6b33a5316d424fcaf23be1f6d642e1b7f36b441706af6256e22179c7cd7304ffa7a667fed0b865cfa1b7c3fc0048d72c2b336a43b8187dbaf7f9fb888d0d93f0d32b19b50323f4de4e1988dc00e132e41db1367b2f205dd37c1d1c76162a94c1c28a5605c7002078384d578c0248523a78c6a69b1fb3562bbc8b8ba60442647203e4a41724f187eda859ccca7bf16901fafaa25b846ac36c7d4cb66ebd41e9570db407bef7d7aab1eb7a1c3225f26012515f101f9963c0d593dd2de2ef8d353c815dbc47fd4a4d08db2de5161913adc93aa7a60f6e04c94fa6b74a36bdcec0817b3c41baf6450bbedc09d773be5a08a9be476a62e86c21d82610ea22b480a205cd46081b7bf4c903a400832874b0d4c34d6ef3e2f25575a98a318fed6c875816e5ed7c4aa9fa6dbb5058b6a2bd45c3882d82a367c292c5c000bfcc29eb073867e4ff9999f8276d72202d39867921e96b538d8e9f37419ed93cb4be21b953df291424b18968fb0c0581d3c53f77454fc97bba22ec94711149f557141805bda524821788544965471044093feaec7f0b419e2e933af46a2c28fdcc4ddd41e7a3da0dd9cef2100d3c178f5ce019e7252a2031224bf32e30e6cfdadc4cf64618a0077cd022fe670f1745ae1aa5f06a8c02e7e8f94e580bdf01d34cc1c7e9f0b91d334fced43bff35aa3c17108043f65d92d95c1291311d0bdb2060a7f4d18fce17ce1ffb43fd4e14f4472fb545b0feb242cb3c7b61ccbb45b477e670e01a084f6bcc8469da794a6e584b1a3831cf0a1b1068468b35e83c64132a408dcd3b80e25d28a7f6e344508621e2c103c07f77c645c359c3e173a1934d280b098123b097f282ccb8692e651bfd4a69431355321f6b38c6a6faeb471d548bbd85e22691cebabdc58fceb4f8048ef2e6f41a77065eb9903593af2db1d7b44796522668e1b513e89198d6c1f7aa6fae7032a62737a2f014a7d82ffd2b05b25b0241e323e03c1690d75862642044ed51223e8a14ef21887628f28ba44770a5991fc6478877846d569b7c75fb8513403fbf06e4f1d5b67d0966838d7e79aecbe915f5ef59684062183f81c6ee2aa1888dc88e739faa81a7b27f69d92ff0784d774b043d0b1ee637a2cad9837df8bb47d870d636cf352b1ccc38ec40a11cc3c045339a23e3a7c0fc12765ce3d971c8a640524ad5036d60cafd9837def824cc56d904ee4938ab81642ac68e4f314a216e55f597fc807f449eceffbb19a674479670ff48ce28112275c5a7c74bc17131c9f9d2afe44b172ed9219f3d12822cf0c61fd8e2e0df5ad8a83b23df74d64aa8bd4693737b3e558ceae687f8798244c755e4fdd0d5887cdd883c48de3bc76bae713887f2e26a41281f07ab9408824a65bf71eb4892d5fbbda11c55292697159b6e12c2bdb1cfcdc1ac1ab48849d7888bfe1ffaf87ba596f86873892e70d9b56b1613ab8880dc3563fc811fc57d27deabf33508f5e195296a9c555685f8d69862bc2d7b445fd97284070a57d7c8e4ce7ab86e4f4b9564cc958da6345418264818b770b1a6e47736f55614cc5f0c71c9ec4e369b753473b319a854ce3256f79d258520b6faf8b5803cae334691aa2c8a73cc80d5d40b70dd4e4c25ba425972c5a12d32a575d72b9dbb52862719cfeafde5faf44c17e5d550a435bf4bd930fa2686a4941ca72d4acbee70f0fd166fa651dcbba539783ed5dfd09ba097f2dde5508ed5cc9cadce416c2bfeb45bb823f8d46a0f6375429f19606044f2f3403d57d615f6e0c9dbf4655210c1fbc19a9d4265fc696ea7e053d1b61f9fe0ae0b834606b784dd799fdde1c1e4e14f4d9fec5e8726034ac84b95f3b46e198e32be64c3b25c13ab4f952b523ece636ead52323f3c6f28dbe666bbf417db6e903aa8702e6f74a60901b60275eb4bfde8dfeb2c8615355780dfebe3e167c525992353c23d983a889ba989c8635b927753d4292cb6abc25aac0007ec5ba32178c720333960981ba8208d1e97bfe172944ccc910e4fd7766293277704b12b030ebc25fac093feeb7e33261798c3fe1f3a824fe8e42f80b56fb2500e2b1c155419d4650a47c6704f8e17a54b74d5e8ff9743c2c9ab0461e988c70e49e5fe40c967e0f1f8eb600ff0dfb35b9c0b86267bfca4e64a53011c7dafea9666270f03816058809cef2f7e596214f1a063f453a1b6ce82eba7ac4da34aa24d4c3a2c80887addf4b33e7ab778f2133ad05481891ff6bb464259f6d891b630ff499df5d7e8642ed3e20d75729e2af09078cd38eab47c902bd273a08872f43c9e371d5b5b0f891dc9dba72db981c74b0bc8fbcc5ee2c1c81ae765cafc4add173189dbb9766e1c0bf5161932aa3214a63eff0a8c1cd3d8bd5ffd1ac93c843e1d7303826e2e0fa9100f40e3d0e652449ed73ae752653bbe721a1af3f60fc4cf9ff35b27ee639dbd4afd4650a10b1e001e6bb0b4c69e791c823c1ab7a5f342c0c434c6c56b6adb6c10e0a5dbe0281156ee7c545f79244de117549c5f68dafb6e72721c0e37faa217f115de50cc73cc7653cbe3c4b5d5a1432c91f0a8188a446994770bcdb7ef75634e8cc21ad85f694dcbbd508565fc09f5ec1611ad728bf86022c907bb579c3c34431aa6e0a5f4b45415effe417774e1742d5d5ba983bafa533d0222953b3e4162e055ad675cca35f1a1f66060aca10f914824ffacdd91e6c20011089419fd6fd44000e5bf78a96a0ce0ead8cedefbae6756a79bb8ba13feb7e0fa2a3d543d85460e76749d2c45ba9e4e863530a903273291e7f9446a2d22c0c543729640c5ad286339106ccb58ce4e190d493d0926833e9694f8740c50a94e7f025b898bafd79896ae649e0f29c982a93c204f74a354a607f62f2b008e024f767efd1f51d955ab1f6a24c8586d667f1cfdb01955ab8130bf3aa4d622d61a50c8a8deb281dbd7fe1ae793404b1496417f839a55f39dc07e9e28144176ddcdb8cb6a81ffc73fe1f277b61de4d01672e7e0f6caf1110e9a041303c1d844fe9f9984da19146b79f81f7c40979253960214c5ab166add8f265b4a99bec631263c3acab6eecf53cfe861f546ff9bd19ffaf59311a2b3332d206425f5170605940d73da270a9afed127eccaf2ecbac57bec2a89b37f1e3f1c067c5434492aeaddfce84066b1fb685c2e0bf3e8ed21303c67f9e09e3616cca37dd70a7496dce92ad4bd3877c64aa765e5ab435a4ce762440ef159d2c440b3f830c31e350e64878f95de5aa25cc7b4a88fbc4724bc6dc32a36fe562d1543eac123f09928c5c865077d15f339378fb58b6c563166b7e0f91f151a1af0a01c9a92fef9090c5992572e468cd1e0d802c51d520666e37023c9f48ef34674fcb319861e4d623a0d7b1c6397a8592eb75235bbf7744afbaaf32d4d6a348316606aa1b21fc23339e1f5f99f02d3c26ed65ad8ab5d360ab0292515af5659f78b7b669a3690b5c3210fecdf16632451d37ceb0b974b157025b94075948a3169b9c2f</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-xray">
-      <input class="hbe hbe-input-field hbe-input-field-xray" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-xray" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-xray">啊偶，好像有东西被加密了, 请输入通行密钥.</span>
-      </label>
-      <svg class="hbe hbe-graphic hbe-graphic-xray" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
-        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"></path>
-        <path d="M0,2.5c0,0,298.666,0,399.333,0C448.336,2.5,513.994,13,597,13c77.327,0,135-10.5,200.999-10.5c95.996,0,402.001,0,402.001,0"></path>
-      </svg>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>学习记录</category>
-        <category>计算机科学</category>
-      </categories>
-      <tags>
-        <tag>secret</tag>
-        <tag>计算机网络</tag>
-        <tag>协议</tag>
-        <tag>学习笔记</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VSCode系编辑器使用技巧</title>
-    <url>/vscode_trick.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
-    .inline-note {
-      display: inline-block;
-      background-color: #fffbe6;
-      color: #333;
-      border-left: 4px solid #f7c948;
-      padding: 0.2em 0.6em;
-      margin: 0 0.2em;
-      font-size: 0.95em;
-      border-radius: 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      font-style: italic;
-      cursor: help;
-      transition: all 0.2s ease;
-    }
-
-    .inline-note:hover {
-      background-color: #fff3bf;
-      box-shadow: 0 0 5px rgba(247, 201, 72, 0.4);
-    }
-</style>
-<p>一些小技巧 (o-ωｑ)).oO 困</p>
-<span id="more"></span>
-
-<h2 id="关于代码折叠"><a href="#关于代码折叠" class="headerlink" title="关于代码折叠"></a>关于代码折叠</h2><table>
-<thead>
-<tr>
-<th>语言</th>
-<th>区域启动</th>
-<th>终止区域</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>蝙蝠</td>
-<td><code>::#region</code>或者<code>REM #region</code></td>
-<td><code>::#endregion</code>或者<code>REM #endregion</code></td>
-</tr>
-<tr>
-<td>C#</td>
-<td><code>#region</code></td>
-<td><code>#endregion</code></td>
-</tr>
-<tr>
-<td>C&#x2F;C++</td>
-<td><code>#pragma region</code></td>
-<td><code>#pragma endregion</code></td>
-</tr>
-<tr>
-<td>CSS&#x2F;Less&#x2F;SCSS</td>
-<td><code>/*#region*/</code></td>
-<td><code>/*#endregion*/</code></td>
-</tr>
-<tr>
-<td>Coffeescript</td>
-<td><code>#region</code></td>
-<td><code>#endregion</code></td>
-</tr>
-<tr>
-<td>F#</td>
-<td><code>//#region</code>或者<code>(#_region)</code></td>
-<td><code>//#endregion</code>或者<code>(#_endregion)</code></td>
-</tr>
-<tr>
-<td>Java</td>
-<td><code>//#region</code>或者<code>//&lt;editor-fold&gt;</code></td>
-<td><code>//#endregion</code>或者<code>//&lt;/editor-fold&gt;</code></td>
-</tr>
-<tr>
-<td>Markdown</td>
-<td><code>&lt;!-- #region --&gt;</code></td>
-<td><code>&lt;!-- #endregion --&gt;</code></td>
-</tr>
-<tr>
-<td>Perl5</td>
-<td><code>#region</code>或者<code>=pod</code></td>
-<td><code>#endregion</code>或者<code>=cut</code></td>
-</tr>
-<tr>
-<td>PHP</td>
-<td><code>#region</code></td>
-<td><code>#endregion</code></td>
-</tr>
-<tr>
-<td>PowerShell</td>
-<td><code>#region</code></td>
-<td><code>#endregion</code></td>
-</tr>
-<tr>
-<td>Python</td>
-<td><code>#region</code>或者<code># region</code></td>
-<td><code>#endregion</code>或者<code># endregion</code></td>
-</tr>
-<tr>
-<td>TypeScript&#x2F;JavaScript</td>
-<td><code>//#region</code></td>
-<td><code>//#endregion</code></td>
-</tr>
-<tr>
-<td>Visual Basic</td>
-<td><code>#Region</code></td>
-<td><code>#End Region</code></td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>工具使用</category>
-        <category>编辑器</category>
-      </categories>
-  </entry>
-  <entry>
     <title>docker 学习笔记</title>
     <url>/docker_note1.html</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><style>
@@ -2136,19 +2316,33 @@
       </tags>
   </entry>
   <entry>
-    <title>win11应用快捷方式图标变白解决方案</title>
-    <url>/win11_linkerror.html</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>故障解决存档</p>
-<span id="more"></span>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">taskkill /f /im explorer.exe</span><br><span class="line">CD /d %userprofile%\AppData\Local</span><br><span class="line">DEL IconCache.db /a</span><br><span class="line">start explorer.exe</span><br><span class="line">cho 执行完成</span><br></pre></td></tr></table></figure>
-<p>将上述文件保存为批处理文件（bat）即可</p>
-]]></content>
+    <title>cs168</title>
+    <url>/cs168.html</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="1f49c8d06191edb86eb10204801734f039a16063e41ec84c7ae21b5e88fc74a7">74ba0eca8a8cd3288e0cffe716599942e1d03166f865dd2a5f65d1390c48a9d43d0240b5b8c6b33a5316d424fcaf23be1f6d642e1b7f36b441706af6256e22179c7cd7304ffa7a667fed0b865cfa1b7c3fc0048d72c2b336a43b8187dbaf7f9fb888d0d93f0d32b19b50323f4de4e1988dc00e132e41db1367b2f205dd37c1d1c76162a94c1c28a5605c7002078384d578c0248523a78c6a69b1fb3562bbc8b8ba60442647203e4a41724f187eda859ccca7bf16901fafaa25b846ac36c7d4cb66ebd41e9570db407bef7d7aab1eb7a1c3225f26012515f101f9963c0d593dd2de2ef8d353c815dbc47fd4a4d08db2de5161913adc93aa7a60f6e04c94fa6b74a36bdcec0817b3c41baf6450bbedc09d773be5a08a9be476a62e86c21d82610ea22b480a205cd46081b7bf4c903a400832874b0d4c34d6ef3e2f25575a98a318fed6c875816e5ed7c4aa9fa6dbb5058b6a2bd45c3882d82a367c292c5c000bfcc29eb073867e4ff9999f8276d72202d39867921e96b538d8e9f37419ed93cb4be21b953df291424b18968fb0c0581d3c53f77454fc97bba22ec94711149f557141805bda524821788544965471044093feaec7f0b419e2e933af46a2c28fdcc4ddd41e7a3da0dd9cef2100d3c178f5ce019e7252a2031224bf32e30e6cfdadc4cf64618a0077cd022fe670f1745ae1aa5f06a8c02e7e8f94e580bdf01d34cc1c7e9f0b91d334fced43bff35aa3c17108043f65d92d95c1291311d0bdb2060a7f4d18fce17ce1ffb43fd4e14f4472fb545b0feb242cb3c7b61ccbb45b477e670e01a084f6bcc8469da794a6e584b1a3831cf0a1b1068468b35e83c64132a408dcd3b80e25d28a7f6e344508621e2c103c07f77c645c359c3e173a1934d280b098123b097f282ccb8692e651bfd4a69431355321f6b38c6a6faeb471d548bbd85e22691cebabdc58fceb4f8048ef2e6f41a77065eb9903593af2db1d7b44796522668e1b513e89198d6c1f7aa6fae7032a62737a2f014a7d82ffd2b05b25b0241e323e03c1690d75862642044ed51223e8a14ef21887628f28ba44770a5991fc6478877846d569b7c75fb8513403fbf06e4f1d5b67d0966838d7e79aecbe915f5ef59684062183f81c6ee2aa1888dc88e739faa81a7b27f69d92ff0784d774b043d0b1ee637a2cad9837df8bb47d870d636cf352b1ccc38ec40a11cc3c045339a23e3a7c0fc12765ce3d971c8a640524ad5036d60cafd9837def824cc56d904ee4938ab81642ac68e4f314a216e55f597fc807f449eceffbb19a674479670ff48ce28112275c5a7c74bc17131c9f9d2afe44b172ed9219f3d12822cf0c61fd8e2e0df5ad8a83b23df74d64aa8bd4693737b3e558ceae687f8798244c755e4fdd0d5887cdd883c48de3bc76bae713887f2e26a41281f07ab9408824a65bf71eb4892d5fbbda11c55292697159b6e12c2bdb1cfcdc1ac1ab48849d7888bfe1ffaf87ba596f86873892e70d9b56b1613ab8880dc3563fc811fc57d27deabf33508f5e195296a9c555685f8d69862bc2d7b445fd97284070a57d7c8e4ce7ab86e4f4b9564cc958da6345418264818b770b1a6e47736f55614cc5f0c71c9ec4e369b753473b319a854ce3256f79d258520b6faf8b5803cae334691aa2c8a73cc80d5d40b70dd4e4c25ba425972c5a12d32a575d72b9dbb52862719cfeafde5faf44c17e5d550a435bf4bd930fa2686a4941ca72d4acbee70f0fd166fa651dcbba539783ed5dfd09ba097f2dde5508ed5cc9cadce416c2bfeb45bb823f8d46a0f6375429f19606044f2f3403d57d615f6e0c9dbf4655210c1fbc19a9d4265fc696ea7e053d1b61f9fe0ae0b834606b784dd799fdde1c1e4e14f4d9fec5e8726034ac84b95f3b46e198e32be64c3b25c13ab4f952b523ece636ead52323f3c6f28dbe666bbf417db6e903aa8702e6f74a60901b60275eb4bfde8dfeb2c8615355780dfebe3e167c525992353c23d983a889ba989c8635b927753d4292cb6abc25aac0007ec5ba32178c720333960981ba8208d1e97bfe172944ccc910e4fd7766293277704b12b030ebc25fac093feeb7e33261798c3fe1f3a824fe8e42f80b56fb2500e2b1c155419d4650a47c6704f8e17a54b74d5e8ff9743c2c9ab0461e988c70e49e5fe40c967e0f1f8eb600ff0dfb35b9c0b86267bfca4e64a53011c7dafea9666270f03816058809cef2f7e596214f1a063f453a1b6ce82eba7ac4da34aa24d4c3a2c80887addf4b33e7ab778f2133ad05481891ff6bb464259f6d891b630ff499df5d7e8642ed3e20d75729e2af09078cd38eab47c902bd273a08872f43c9e371d5b5b0f891dc9dba72db981c74b0bc8fbcc5ee2c1c81ae765cafc4add173189dbb9766e1c0bf5161932aa3214a63eff0a8c1cd3d8bd5ffd1ac93c843e1d7303826e2e0fa9100f40e3d0e652449ed73ae752653bbe721a1af3f60fc4cf9ff35b27ee639dbd4afd4650a10b1e001e6bb0b4c69e791c823c1ab7a5f342c0c434c6c56b6adb6c10e0a5dbe0281156ee7c545f79244de117549c5f68dafb6e72721c0e37faa217f115de50cc73cc7653cbe3c4b5d5a1432c91f0a8188a446994770bcdb7ef75634e8cc21ad85f694dcbbd508565fc09f5ec1611ad728bf86022c907bb579c3c34431aa6e0a5f4b45415effe417774e1742d5d5ba983bafa533d0222953b3e4162e055ad675cca35f1a1f66060aca10f914824ffacdd91e6c20011089419fd6fd44000e5bf78a96a0ce0ead8cedefbae6756a79bb8ba13feb7e0fa2a3d543d85460e76749d2c45ba9e4e863530a903273291e7f9446a2d22c0c543729640c5ad286339106ccb58ce4e190d493d0926833e9694f8740c50a94e7f025b898bafd79896ae649e0f29c982a93c204f74a354a607f62f2b008e024f767efd1f51d955ab1f6a24c8586d667f1cfdb01955ab8130bf3aa4d622d61a50c8a8deb281dbd7fe1ae793404b1496417f839a55f39dc07e9e28144176ddcdb8cb6a81ffc73fe1f277b61de4d01672e7e0f6caf1110e9a041303c1d844fe9f9984da19146b79f81f7c40979253960214c5ab166add8f265b4a99bec631263c3acab6eecf53cfe861f546ff9bd19ffaf59311a2b3332d206425f5170605940d73da270a9afed127eccaf2ecbac57bec2a89b37f1e3f1c067c5434492aeaddfce84066b1fb685c2e0bf3e8ed21303c67f9e09e3616cca37dd70a7496dce92ad4bd3877c64aa765e5ab435a4ce762440ef159d2c440b3f830c31e350e64878f95de5aa25cc7b4a88fbc4724bc6dc32a36fe562d1543eac123f09928c5c865077d15f339378fb58b6c563166b7e0f91f151a1af0a01c9a92fef9090c5992572e468cd1e0d802c51d520666e37023c9f48ef34674fcb319861e4d623a0d7b1c6397a8592eb75235bbf7744afbaaf32d4d6a348316606aa1b21fc23339e1f5f99f02d3c26ed65ad8ab5d360ab0292515af5659f78b7b669a3690b5c3210fecdf16632451d37ceb0b974b157025b94075948a3169b9c2f</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-xray">
+      <input class="hbe hbe-input-field hbe-input-field-xray" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-xray" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-xray">啊偶，好像有东西被加密了, 请输入通行密钥.</span>
+      </label>
+      <svg class="hbe hbe-graphic hbe-graphic-xray" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
+        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"></path>
+        <path d="M0,2.5c0,0,298.666,0,399.333,0C448.336,2.5,513.994,13,597,13c77.327,0,135-10.5,200.999-10.5c95.996,0,402.001,0,402.001,0"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
       <categories>
-        <category>解决方案</category>
-        <category>系统问题</category>
+        <category>学习记录</category>
+        <category>计算机科学</category>
       </categories>
       <tags>
-        <tag>win11</tag>
+        <tag>secret</tag>
+        <tag>计算机网络</tag>
+        <tag>协议</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2176,6 +2370,35 @@
       </categories>
       <tags>
         <tag>参考</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络学习笔记</title>
+    <url>/wangluo_1.html</url>
+    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="816bad23fe16467e1187c6c0ca142138f1d6c014b9d48187e7cc21dcac7aac86">74ba0eca8a8cd3288e0cffe716599942e1d03166f865dd2a5f65d1390c48a9d43d0240b5b8c6b33a5316d424fcaf23be1f6d642e1b7f36b441706af6256e22179c7cd7304ffa7a667fed0b865cfa1b7c3fc0048d72c2b336a43b8187dbaf7f9fb888d0d93f0d32b19b50323f4de4e1984000582416e1cb3cb7eef326badfeb60d769174f4eb4987f2a65bbb420b5c6bfdbf31737cebc04e98dc20852fec870e25edfa84e01ed4be1a78f451cdd9430caef79dba6b5b59f74335c92501cc4aa6a043d3a615a9efaa58238a35bd770fe34228b817aa721f0ac79c7078c57b33ec740518db1a8f5df84af763f232c03b6f7ff4dc283211c20fd248e7e88cc7d55ad233ec8565f70594e7c2371048c1362db860b6dc240b41ff2d987cbaf1f664858ccd913acfebfc0f84c8120bb586fc119e41e6b634bfb1a17aa131773206e51ac9032767488d064b3833a6aaa4d3ead701269d6fdf39b8a7b69d57339c418aae5b315badfb8fe0632135a829b9e241b23b2b1efadb5d026a88e1c181e32246cb5f48dd3450fb163a884a8555ec9dc6cca610fd6586d4de2f98fe3a450f5e5b86ec2412682a58cc4519d2c1af5eafac789518aa4e7f13863dd8e89506bc25d3290d5f24a4df2c46fbd209382d3295bd4a0c5ef4a04d3d6400090c25f91c9c46c4a189e9844bd7f83333135f488a80276b28a223e80be20a3480effa55606012df152af52ec92b5b9ca88b89bc4584a75a5ebb472c5f372f307dd0d424a46c933a909d1edc7d239e5c267d6f6f817a1c01aa80f2920f5693b4eaa013a59764d9cfcdccc738836520a9a7fa55825fd2ee14eb00afdcd24efcfbae94c335252b512f0d5450c411252e2a8cb976f2d441ec3f476814bfe2866aae6bc4c818129ce9271ef00a62f6a2f6910d52f027722ffcac84d0286b05b522520ee9dc3a77b8c44f82cf4869098631f0d2aed42e93b237e0099607241e2eb5e3d074534939fa13fc19ff4e6b9aa0adaff72cace2833e0a43a7daf4fab6200e3cad2f15fb85a96f44ff109dc65fab13fb7d91fd64215191fe6ae77b2a17eb4b81b1c51cad84a45c19d5d4ce53a7316f32ec006421ac12f76fb3ce5a8cc57070a7b543dbdeaceb4252203c24d7bd14dc17455b3125eac1cd412d22637d19e6d1bdefeb37fc09f4b06fd8d495f4b71467b0c29b09172fe581338abf0d4d71b11276fb94989ec02bf571c3b44a6a448bd9d3ddce6a4e65ae7bd190a8585e96c6eafb2f5054ba4d2b02495c7f72fea2859bcb6603a641df6d1f3f057544f903d83e9fbde5b8705b92f6b3ee6cea6c429cbce711d5eb9b9dbef38426d1a2fee21b3411bb5f280d37c263a591c56b751328aaf31dab4becf906932ae6d9098334d38b01e829a29b1825539bc394dbfa98766874ed1a7fc03728e5f83583fabc09e37cb1b28544b3d3ff3e2dcde50ad3b5e36debfbe73aeb39921bbd50dedb0e8f0cbdab26e3128c4b6c43993cc430f8f5d179fa9442c3011aa4a93ddb678790badb34d0224ab2e5a667e88252ae1425254d4a1f63cf6133fd300989a53ede091407bfce5d207d9f353d96dd5fe8a01638f8953efe2eeb2e98faf679b2ae687bac5d740f08de8f635485e4cc2540a7f709cdefc1636f568a9d5c91723913cc870feee042dc041fc072f310e20814306a3445944ce20619155f3928a7e03688363a2f90259e38d97b8fce5306f4682eba5b3844d03dfa67f1d2710873823815b7f1e6d8e170a15ef968c9b6fe673d28c214bd6d4b748cb519bccfbbb51eacb16b68837565097e8b8ec649cc96b899ca5782aad15733ceae9683768552ade6348272bc6b87a6989d8eb247d3277a279156161c9a4a8c2d250da4be5ab7068d913d37a461f38aaa5620b9ad5d0cb11bfdf428d94563158606c39f15f41d85c940dfa52dde93a0105f1ab035fb2cfbcbe1c87eb8cd2c41408a213f1a5b1096d97ad7cb576575e5b136c27e53e3586a469a60cca1baae0dc7e87d93cd8f0721329102a65f03ef618efac6ad4ccfbd1d792c3d0332ea9dfa510c6b6bde36286ad8e9ca6202217834c95d4064da4474f89b8611ad15b15d730c7b95172738eacd2eb66faa5b500bc573403e631768fba9f9b873a11eece2415161eec92de25a34b5944f626495fe7fe638daba1b7da8ab3d43204da14b7b9bb8973f92d6e8c1513c3b354af48cff47eb82084540434ae3f88244016f2bafcd206df08fc140800aaa4acfce7c36d46b75d7230f61707ec967c2e21b7a1c19360ff3bba1fbe7610d6fd836d445b4ef3989b7a461c4f5adeb6af19a4031e04ad473b99e951bafaddb66c31ae782f28ae8f389f9f932d5a008290f6e54b3392e95e954bcf552777028f711667561d05b309eaf8b57639885b5c56e820b7970c078185d2a240b62f0d3375b2b7baf24ebd948432611c19f73d0b86ca69dadf3f107b9a0ff78c1877b711b3644f87962141e2fb61c742c9fd2d8915ca80f2aab47e59873095f516ea99ef65199a1aee96c2a0b247e6a65797d39638152fbea4586d062cf14a0ba0a57f85e92121b9c242f52b1c6f111798d7997cd0c9e6cf571219c741db84fc16dded02a0a371d7e940ea222121d9417953ce95b38c1ac72f7c36152bf080e499c39582e02673d948693e3f6c6def94aa0c4df53777fcdda5e00aff7d52fcffda09c6d21c65d69649a8132e48f94b727cc6d74d0352d95cc2e91bd5cd0b3f0052951416e718f6f2f612b53bb6c195aab72694109ea83d0109956b8c0e22c8e247f864df35ca76fd5110dd9b377f62fd446cf32e202347bd17b735664973f84c0dc907103a9e9c4e403c851e137beacdd880fc8b2a91586ea8eca33554ca18d534137f69f6dbeed368151acb775ce3e11edccc150a06d1ad8590d06934cd3243f988f8b9315a4787a1a25a0759b633a6c0e8cc929ffa662281241e5e22f129c86a955af7c9c78292f09adb7f097a1054f967db0fd8a53db8f7b506da41f27251ab2b364eaa47eb328b657b2cc6d51baef552e4ae0436a4dc80977e19b0903d4cba773c2fec2869df55904a3048eb3e3a6fd650b15908e9f2c141709ebc4bcd27b7e56f8f4dce757c1e9607bce3d52146ad88b8423f1c52ae398175b7d34379bac8772a95f83aa474552d4ebe48678c7899d9dd357022b0ebcb30dfe7286dec11dcdd69cdd997f53ae0096b24ed462fb8109028a22a8d9c029d5012f1e2c366bb67506b536eb1d872cd6b84e5327e626e6513a8e8ed5c20e42b3b45091e5bccc4084c84dff8b6b9b128c32eadf371d078f9e91a898bdf9b756af319c6643685b3e3286b697c7b33d535b90e8dfe68249ba390e9efd2b1b95552e1d171e096f1602cb6084b9a616560227fcd637c86f722075cba8405b7866ea9e7f66be078b7b32ebf4471720ec380572a1a504657abe4d2c37b780c7c622857e4208ace6f11214a1d80415b33e29135eb64bca31f9c0773cf22b99d5d465943f7011f84195b5a06216853c03a8fce9601bfe59a5d7b4b0fc8e6c41c2ee68dec00fe9cec71ee16a801d3d0b132c5fd1282bf5bbd1c9f7b216166d0ef671cfb435b3eeb5b49ea5e6fae8ee75fa0a486963b260961acda0a471727f81a4eb3d30ad461e7be0e29f10eceb3cccbbd6d610ecfaf34180299f3b4575d1b57f3d3945b45c0a2acff64150b9ff67a5086b8af2dc49305290f986a62fe55498f9ce58bc467b2a73a3b3438bbe43caf8f2c0527befd596e93ec190523f2ce7d6b6162948ef48a15c28d8e0c0da0a2d6d4f41783762209f179cf734d5587252b9f8e602ce81121c065cc8b823d12d9a9b5b4f17f7ffb11e987f00659b9e8fbedcba93eb53a72e3d59e1ded2604a62ef58743e7f956c9bb0a5c5804d0bd4204a07bc1156eb875c1119f249ac46e4fc24b9f7d959621ed517b636f82865ab91b183091b6c5dcad5c75e4133bb7ab6bce5778c7f5dd5930611bd7e0bec8f33099adac67a1e70107bf8435900b63674e9341b7bfefd87fb401de1ab10670dea39c30950abedd1969ee6ceb0d501936b0014a407240f1e3686c7335d3f59f2e6c112928e7ffd6af05abfa902bab5fe695448242a6c7d55d124f1437c077c15a387406fbd7029d25068cc97db2472cde4074085f8138b30635a8ccdb8b5732cd1080a76d1c006161b563a33e78f339c614a73b251ad89f86284f6d251732273ee45f046dae4349b0afba35286e56520f753f276ce8a29c56ef581839723b5c7b28b73bf76fe94277bbbbcd2218faeacc372e15ad1bc5578981cfaa67468f9448fdd2c4066ff184528da0604a1f31b46842d0112940ba02a6d2ab4a42e8b8d5bec621142af2af3ab8bddd04abe7ed557bfc65df0a9543fcba0bd4b10613467ef7e5546a23d34448e8239dd1c25b64ec261954f29ecb60365b9ff4058034ab10b6c5a0461707c6f0e84bfef33a5bc747600decd6e2a474562e90631fd1673c1a70664821ce94d4e3b9851b3536750aae9d05cf07dd81371e30c12fee34c9f03a75e933683e51ea85d1d4e8c5a8a46bd7179f79f91d1b373199a69cc28a65c6c630c5105cb6f17057ffaa9b06b7d03242c952ade6e272442caca6c85058ca52042736b811f8855eeb859e9c06f53627239a94160bc4ce411663be4804055d1bce40e49a4a6f656473e00e780e605fb0caefdd822fae989862b3ab577f1035e8e6e1ff2b82623345c3b8fe5652abb1510ba5b700e684453c47784a2ae3496a35c19325646c640686aafa482afbee342b836fcb4f8b6ac6634380a1931d225cb71824f50d937f164eb2c329711cfffc638dda287ded2940b33bbb3c1e811911152933319418d73702b22cc71f686d40e456243cac167a9f7c304296802cd9646875f1bb6e19670f08e43ca1aa0d806667967ddcadfc13155d3a3fa027be8dacfd4b575e24f38bff2fdf3832c5b845cc1201a94b51ec810a034604dde0e6574ec7de6ef1228c4142e28878b7f02354f652a9976e27ba3f37ca3f727f70baaa27cee104780fec2527565f9d8935bf121c4254688377db75f297aa06854faf5e68ec0b69337553403da353af1c041102f98b66103f9feb753b4faf8ce53ee1424fc8a15b27085626ee7b60821a18f3e229baf762b5fc510434fcf2eb4077a7f6451b99081fa49523d58a3637c31faa02acaab8a1b0fcc8572248d97780297defc7c003ef2211f9183ed8ed59f67c9362abe7c5a7cb5a95da2be791c6ebc43d1ad717acc2edf284c4722b1f00772126d333427fd8c9ac1802da0b090ee0e2e0b9846eab7de3fd15ec5a84af74bb2b81fa101d37a8ad694143516cb1fbab67cdb4f1d1577a4b2c1ffe01374ae7fc73ff7d7480ccd0620caa69397c39765017ffc278b92ad396eae642a1aaeb5f8bedf4b0ae7a6779fc5eb0ee53aa3a56ac2e6fa164668b50fbe58a896f900a049d40bd3810c8d2381cb3447033e5e967230d6affb60d31b0afae288ad37ebb56cb4d0b150fdc38ae522d2a648d44098a277652c94fb9f59c755b57901b836a65e43ff3e7c0e4a09fcc51d34501487e25a85e1a63a5eb3c18373de2d0b4a9bf39d9f95118003fcb5648a09d149908f75300070c6c9e747b19fec780f04add58e8a49ab0ef3807e521f146608d98fee6ae6d49cde76f754554eb28c778078d38eedd9ffde80f60466ae10d9091d5af51476d1675c112ce667dae19e9980d4feb2b1066e95c985dc54cc69b20d01f6d16f03d7866b96d96b793cdeeac97835657417d35bdf6b1e5cbb20b6d9333f05319c7b90baa16495bb94be5c0b70725be1c11d809f3d55b0d760281073bbcbe890554830773eee316ea9d0327b8e06efe5ac07b51d2054478943ef06b2cff9dcfd1e1f7e5cc4449dfcfa6832030dff1cc2f14782102f59300d903ac5dd41d65bbf095f852ff3cae154f50558a31b73a4f9ebdd1ee99e5e1b757c501edbcdb9900f1ad707309cc31d28add4e25fb8dc42bfd95acc59911acf464c155e9300e1169816bf54731eb2665e4b6f60a84df9225378b88e0df3c9206d85b0cc876c21d19422246fb82ee99b2d056b5b391a7d12c3d7de70ff3edd1e97cb017899ca6142d75618214b2a027ac63ee09b677fe802f9300d24125b67133f5b60fab6da3669a01ab3ec46249136a00d674fb73a2b0c9ad3924089b60458a4baff348942c6e13ff66115b71c58963168deafa97ca29483f7435da91f46be6b54c442ded4a6bfbce030b4f2cc51109bd202967ee6019749813251b3a2095b51f7b10f20240263890252db450549f5ca826793b27883fae15b5bbbbaf91c1427d20ebfb44ae8070eb9b32ff32383a34ae39aa6ab56149c090ffa3a7b8a0dcd0712cc7aa89b52818eb034d6608a21550f49763eb545d7c80dde63873adc4fb044245ccbd0b42b8ca25f186761917c1ec5f542201f94541e3f13fc73d1795a30da4fe4b6a8473bd004116b9f61be655f50d50fe287607bf677d0ca6315dea4bfd2080c2a2a5c1e998ce69ec9e1325eac3d7f57755c820f45d75e147517b4be4ee3134c2af7327022f57072553dc3f07492d4c59122e420f6e4141b2d537600bf0d471a91047b046732e316488f3a59a074908d267ec0c8dd716661d65d388667f61fff74bc5bd5301e8a48effbd67389e98adc2fcab186b07ecc26566edf0bfa13bbf9a9832e103745c1dcf65aa13fbc9a16eb519c3c03cf4a4054d8b81acb45bcc6586365ed0af59bc5980a6d545dbe046fe735d4435c19a76888b3e8044960b093b731edf4a9d2045017d975038eb4b0da8acbe37ba74aaf6c8bb77fe1d168599c6e947edd14a2dba9a5a1b8eba210cbf961106775741800009232223c8c0f89a43634792b340df49cb52885aea56d2979cc92b1454de8df2b1ace60f18b2ff921dc70613ac6657ec1246eb5f75e58b68472aae3d7f7746a2be9a0be1dffb8802ecf4a0209577885d146f731ace8b9074ac484d66e397dbf1a17afb9d2785684c19e1d41cbd44df717d5a896d102e1957e884c136fca940c021db60bed7b04e2ee6caa766dfac982e8c2034afa253c5ea53773f3dd7c08be1842a8e89ee6a71b71bccd771f859469f7a221db7103db57127ec5d475d2793b01d9f04459390b0f359b28b1a4c7499f85aa0fdee901e7f49e03e90f3eb06c7d55296479e4603d21ee0e2639ed2aae6191c14796b047eb9b3cc2c90270bef8cd20384398aa37fd04610017600910053a1a1661521b9e44edfcc2046f6eb693473bebe5efe2934b897ce0c4e475e5c46b7db5cceb848cdfe068c85f7c8f987f3b213947b83237f1b8fd1b816b33dab29de1068ed8179bdc5f164a6c7d1a677cf3d029767296d821c2ea33e33445a22d4efec5e7ce30be47e45a20abfd478d13074cfe4209fa724a65f81a5ce91034c2d7b9deeb04db306aa598aaa29c4691e83de9af018537a01c330a440840cde03456ba685aed26c0264428c7f60217e89479d2d6f94cb37d6c111547ee9f56c68c11569dfee87a3b1bf98df72f9c1415585fd5ccaafdf748808e61d61c023c6793113bc713b47143f353d737358c7c24cf1aeb936ff8ded6650190310dd820230d6c002d4fcba85deaab4bdfbb6b03a4037cf445ea9844691a31b6873745b404e06742a312c011cde6151e4d51dfd5fb4102adf63b0004d27289ef020e30b8443379823931e6c9ae36d411f124f5ac011fe00f8320c968ff45a872151ab5412eb8fb6029b3f42dee2d435168c3246c3f75e27a0fa47706f7a1966cede29dff67772161cbff27aeb0da3b9350b67</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-xray">
+      <input class="hbe hbe-input-field hbe-input-field-xray" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-xray" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-xray">啊偶，好像有东西被加密了, 请输入通行密钥.</span>
+      </label>
+      <svg class="hbe hbe-graphic hbe-graphic-xray" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
+        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"></path>
+        <path d="M0,2.5c0,0,298.666,0,399.333,0C448.336,2.5,513.994,13,597,13c77.327,0,135-10.5,200.999-10.5c95.996,0,402.001,0,402.001,0"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+      <categories>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>secret</tag>
+        <tag>计算机网络</tag>
+        <tag>协议</tag>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
   <entry>
@@ -2547,44 +2770,15 @@
         <category>云原生</category>
       </categories>
       <tags>
+        <tag>大模型</tag>
         <tag>linux</tag>
         <tag>docker</tag>
         <tag>ollama</tag>
         <tag>gradio</tag>
         <tag>dify</tag>
         <tag>人工智能</tag>
-        <tag>大模型</tag>
         <tag>云原生</tag>
         <tag>ccf</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网络学习笔记</title>
-    <url>/wangluo_1.html</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉, 这个密码看着不太对, 请再试试." data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="816bad23fe16467e1187c6c0ca142138f1d6c014b9d48187e7cc21dcac7aac86">74ba0eca8a8cd3288e0cffe716599942e1d03166f865dd2a5f65d1390c48a9d43d0240b5b8c6b33a5316d424fcaf23be1f6d642e1b7f36b441706af6256e22179c7cd7304ffa7a667fed0b865cfa1b7c3fc0048d72c2b336a43b8187dbaf7f9fb888d0d93f0d32b19b50323f4de4e1984000582416e1cb3cb7eef326badfeb60d769174f4eb4987f2a65bbb420b5c6bfdbf31737cebc04e98dc20852fec870e25edfa84e01ed4be1a78f451cdd9430caef79dba6b5b59f74335c92501cc4aa6a043d3a615a9efaa58238a35bd770fe34228b817aa721f0ac79c7078c57b33ec740518db1a8f5df84af763f232c03b6f7ff4dc283211c20fd248e7e88cc7d55ad233ec8565f70594e7c2371048c1362db860b6dc240b41ff2d987cbaf1f664858ccd913acfebfc0f84c8120bb586fc119e41e6b634bfb1a17aa131773206e51ac9032767488d064b3833a6aaa4d3ead701269d6fdf39b8a7b69d57339c418aae5b315badfb8fe0632135a829b9e241b23b2b1efadb5d026a88e1c181e32246cb5f48dd3450fb163a884a8555ec9dc6cca610fd6586d4de2f98fe3a450f5e5b86ec2412682a58cc4519d2c1af5eafac789518aa4e7f13863dd8e89506bc25d3290d5f24a4df2c46fbd209382d3295bd4a0c5ef4a04d3d6400090c25f91c9c46c4a189e9844bd7f83333135f488a80276b28a223e80be20a3480effa55606012df152af52ec92b5b9ca88b89bc4584a75a5ebb472c5f372f307dd0d424a46c933a909d1edc7d239e5c267d6f6f817a1c01aa80f2920f5693b4eaa013a59764d9cfcdccc738836520a9a7fa55825fd2ee14eb00afdcd24efcfbae94c335252b512f0d5450c411252e2a8cb976f2d441ec3f476814bfe2866aae6bc4c818129ce9271ef00a62f6a2f6910d52f027722ffcac84d0286b05b522520ee9dc3a77b8c44f82cf4869098631f0d2aed42e93b237e0099607241e2eb5e3d074534939fa13fc19ff4e6b9aa0adaff72cace2833e0a43a7daf4fab6200e3cad2f15fb85a96f44ff109dc65fab13fb7d91fd64215191fe6ae77b2a17eb4b81b1c51cad84a45c19d5d4ce53a7316f32ec006421ac12f76fb3ce5a8cc57070a7b543dbdeaceb4252203c24d7bd14dc17455b3125eac1cd412d22637d19e6d1bdefeb37fc09f4b06fd8d495f4b71467b0c29b09172fe581338abf0d4d71b11276fb94989ec02bf571c3b44a6a448bd9d3ddce6a4e65ae7bd190a8585e96c6eafb2f5054ba4d2b02495c7f72fea2859bcb6603a641df6d1f3f057544f903d83e9fbde5b8705b92f6b3ee6cea6c429cbce711d5eb9b9dbef38426d1a2fee21b3411bb5f280d37c263a591c56b751328aaf31dab4becf906932ae6d9098334d38b01e829a29b1825539bc394dbfa98766874ed1a7fc03728e5f83583fabc09e37cb1b28544b3d3ff3e2dcde50ad3b5e36debfbe73aeb39921bbd50dedb0e8f0cbdab26e3128c4b6c43993cc430f8f5d179fa9442c3011aa4a93ddb678790badb34d0224ab2e5a667e88252ae1425254d4a1f63cf6133fd300989a53ede091407bfce5d207d9f353d96dd5fe8a01638f8953efe2eeb2e98faf679b2ae687bac5d740f08de8f635485e4cc2540a7f709cdefc1636f568a9d5c91723913cc870feee042dc041fc072f310e20814306a3445944ce20619155f3928a7e03688363a2f90259e38d97b8fce5306f4682eba5b3844d03dfa67f1d2710873823815b7f1e6d8e170a15ef968c9b6fe673d28c214bd6d4b748cb519bccfbbb51eacb16b68837565097e8b8ec649cc96b899ca5782aad15733ceae9683768552ade6348272bc6b87a6989d8eb247d3277a279156161c9a4a8c2d250da4be5ab7068d913d37a461f38aaa5620b9ad5d0cb11bfdf428d94563158606c39f15f41d85c940dfa52dde93a0105f1ab035fb2cfbcbe1c87eb8cd2c41408a213f1a5b1096d97ad7cb576575e5b136c27e53e3586a469a60cca1baae0dc7e87d93cd8f0721329102a65f03ef618efac6ad4ccfbd1d792c3d0332ea9dfa510c6b6bde36286ad8e9ca6202217834c95d4064da4474f89b8611ad15b15d730c7b95172738eacd2eb66faa5b500bc573403e631768fba9f9b873a11eece2415161eec92de25a34b5944f626495fe7fe638daba1b7da8ab3d43204da14b7b9bb8973f92d6e8c1513c3b354af48cff47eb82084540434ae3f88244016f2bafcd206df08fc140800aaa4acfce7c36d46b75d7230f61707ec967c2e21b7a1c19360ff3bba1fbe7610d6fd836d445b4ef3989b7a461c4f5adeb6af19a4031e04ad473b99e951bafaddb66c31ae782f28ae8f389f9f932d5a008290f6e54b3392e95e954bcf552777028f711667561d05b309eaf8b57639885b5c56e820b7970c078185d2a240b62f0d3375b2b7baf24ebd948432611c19f73d0b86ca69dadf3f107b9a0ff78c1877b711b3644f87962141e2fb61c742c9fd2d8915ca80f2aab47e59873095f516ea99ef65199a1aee96c2a0b247e6a65797d39638152fbea4586d062cf14a0ba0a57f85e92121b9c242f52b1c6f111798d7997cd0c9e6cf571219c741db84fc16dded02a0a371d7e940ea222121d9417953ce95b38c1ac72f7c36152bf080e499c39582e02673d948693e3f6c6def94aa0c4df53777fcdda5e00aff7d52fcffda09c6d21c65d69649a8132e48f94b727cc6d74d0352d95cc2e91bd5cd0b3f0052951416e718f6f2f612b53bb6c195aab72694109ea83d0109956b8c0e22c8e247f864df35ca76fd5110dd9b377f62fd446cf32e202347bd17b735664973f84c0dc907103a9e9c4e403c851e137beacdd880fc8b2a91586ea8eca33554ca18d534137f69f6dbeed368151acb775ce3e11edccc150a06d1ad8590d06934cd3243f988f8b9315a4787a1a25a0759b633a6c0e8cc929ffa662281241e5e22f129c86a955af7c9c78292f09adb7f097a1054f967db0fd8a53db8f7b506da41f27251ab2b364eaa47eb328b657b2cc6d51baef552e4ae0436a4dc80977e19b0903d4cba773c2fec2869df55904a3048eb3e3a6fd650b15908e9f2c141709ebc4bcd27b7e56f8f4dce757c1e9607bce3d52146ad88b8423f1c52ae398175b7d34379bac8772a95f83aa474552d4ebe48678c7899d9dd357022b0ebcb30dfe7286dec11dcdd69cdd997f53ae0096b24ed462fb8109028a22a8d9c029d5012f1e2c366bb67506b536eb1d872cd6b84e5327e626e6513a8e8ed5c20e42b3b45091e5bccc4084c84dff8b6b9b128c32eadf371d078f9e91a898bdf9b756af319c6643685b3e3286b697c7b33d535b90e8dfe68249ba390e9efd2b1b95552e1d171e096f1602cb6084b9a616560227fcd637c86f722075cba8405b7866ea9e7f66be078b7b32ebf4471720ec380572a1a504657abe4d2c37b780c7c622857e4208ace6f11214a1d80415b33e29135eb64bca31f9c0773cf22b99d5d465943f7011f84195b5a06216853c03a8fce9601bfe59a5d7b4b0fc8e6c41c2ee68dec00fe9cec71ee16a801d3d0b132c5fd1282bf5bbd1c9f7b216166d0ef671cfb435b3eeb5b49ea5e6fae8ee75fa0a486963b260961acda0a471727f81a4eb3d30ad461e7be0e29f10eceb3cccbbd6d610ecfaf34180299f3b4575d1b57f3d3945b45c0a2acff64150b9ff67a5086b8af2dc49305290f986a62fe55498f9ce58bc467b2a73a3b3438bbe43caf8f2c0527befd596e93ec190523f2ce7d6b6162948ef48a15c28d8e0c0da0a2d6d4f41783762209f179cf734d5587252b9f8e602ce81121c065cc8b823d12d9a9b5b4f17f7ffb11e987f00659b9e8fbedcba93eb53a72e3d59e1ded2604a62ef58743e7f956c9bb0a5c5804d0bd4204a07bc1156eb875c1119f249ac46e4fc24b9f7d959621ed517b636f82865ab91b183091b6c5dcad5c75e4133bb7ab6bce5778c7f5dd5930611bd7e0bec8f33099adac67a1e70107bf8435900b63674e9341b7bfefd87fb401de1ab10670dea39c30950abedd1969ee6ceb0d501936b0014a407240f1e3686c7335d3f59f2e6c112928e7ffd6af05abfa902bab5fe695448242a6c7d55d124f1437c077c15a387406fbd7029d25068cc97db2472cde4074085f8138b30635a8ccdb8b5732cd1080a76d1c006161b563a33e78f339c614a73b251ad89f86284f6d251732273ee45f046dae4349b0afba35286e56520f753f276ce8a29c56ef581839723b5c7b28b73bf76fe94277bbbbcd2218faeacc372e15ad1bc5578981cfaa67468f9448fdd2c4066ff184528da0604a1f31b46842d0112940ba02a6d2ab4a42e8b8d5bec621142af2af3ab8bddd04abe7ed557bfc65df0a9543fcba0bd4b10613467ef7e5546a23d34448e8239dd1c25b64ec261954f29ecb60365b9ff4058034ab10b6c5a0461707c6f0e84bfef33a5bc747600decd6e2a474562e90631fd1673c1a70664821ce94d4e3b9851b3536750aae9d05cf07dd81371e30c12fee34c9f03a75e933683e51ea85d1d4e8c5a8a46bd7179f79f91d1b373199a69cc28a65c6c630c5105cb6f17057ffaa9b06b7d03242c952ade6e272442caca6c85058ca52042736b811f8855eeb859e9c06f53627239a94160bc4ce411663be4804055d1bce40e49a4a6f656473e00e780e605fb0caefdd822fae989862b3ab577f1035e8e6e1ff2b82623345c3b8fe5652abb1510ba5b700e684453c47784a2ae3496a35c19325646c640686aafa482afbee342b836fcb4f8b6ac6634380a1931d225cb71824f50d937f164eb2c329711cfffc638dda287ded2940b33bbb3c1e811911152933319418d73702b22cc71f686d40e456243cac167a9f7c304296802cd9646875f1bb6e19670f08e43ca1aa0d806667967ddcadfc13155d3a3fa027be8dacfd4b575e24f38bff2fdf3832c5b845cc1201a94b51ec810a034604dde0e6574ec7de6ef1228c4142e28878b7f02354f652a9976e27ba3f37ca3f727f70baaa27cee104780fec2527565f9d8935bf121c4254688377db75f297aa06854faf5e68ec0b69337553403da353af1c041102f98b66103f9feb753b4faf8ce53ee1424fc8a15b27085626ee7b60821a18f3e229baf762b5fc510434fcf2eb4077a7f6451b99081fa49523d58a3637c31faa02acaab8a1b0fcc8572248d97780297defc7c003ef2211f9183ed8ed59f67c9362abe7c5a7cb5a95da2be791c6ebc43d1ad717acc2edf284c4722b1f00772126d333427fd8c9ac1802da0b090ee0e2e0b9846eab7de3fd15ec5a84af74bb2b81fa101d37a8ad694143516cb1fbab67cdb4f1d1577a4b2c1ffe01374ae7fc73ff7d7480ccd0620caa69397c39765017ffc278b92ad396eae642a1aaeb5f8bedf4b0ae7a6779fc5eb0ee53aa3a56ac2e6fa164668b50fbe58a896f900a049d40bd3810c8d2381cb3447033e5e967230d6affb60d31b0afae288ad37ebb56cb4d0b150fdc38ae522d2a648d44098a277652c94fb9f59c755b57901b836a65e43ff3e7c0e4a09fcc51d34501487e25a85e1a63a5eb3c18373de2d0b4a9bf39d9f95118003fcb5648a09d149908f75300070c6c9e747b19fec780f04add58e8a49ab0ef3807e521f146608d98fee6ae6d49cde76f754554eb28c778078d38eedd9ffde80f60466ae10d9091d5af51476d1675c112ce667dae19e9980d4feb2b1066e95c985dc54cc69b20d01f6d16f03d7866b96d96b793cdeeac97835657417d35bdf6b1e5cbb20b6d9333f05319c7b90baa16495bb94be5c0b70725be1c11d809f3d55b0d760281073bbcbe890554830773eee316ea9d0327b8e06efe5ac07b51d2054478943ef06b2cff9dcfd1e1f7e5cc4449dfcfa6832030dff1cc2f14782102f59300d903ac5dd41d65bbf095f852ff3cae154f50558a31b73a4f9ebdd1ee99e5e1b757c501edbcdb9900f1ad707309cc31d28add4e25fb8dc42bfd95acc59911acf464c155e9300e1169816bf54731eb2665e4b6f60a84df9225378b88e0df3c9206d85b0cc876c21d19422246fb82ee99b2d056b5b391a7d12c3d7de70ff3edd1e97cb017899ca6142d75618214b2a027ac63ee09b677fe802f9300d24125b67133f5b60fab6da3669a01ab3ec46249136a00d674fb73a2b0c9ad3924089b60458a4baff348942c6e13ff66115b71c58963168deafa97ca29483f7435da91f46be6b54c442ded4a6bfbce030b4f2cc51109bd202967ee6019749813251b3a2095b51f7b10f20240263890252db450549f5ca826793b27883fae15b5bbbbaf91c1427d20ebfb44ae8070eb9b32ff32383a34ae39aa6ab56149c090ffa3a7b8a0dcd0712cc7aa89b52818eb034d6608a21550f49763eb545d7c80dde63873adc4fb044245ccbd0b42b8ca25f186761917c1ec5f542201f94541e3f13fc73d1795a30da4fe4b6a8473bd004116b9f61be655f50d50fe287607bf677d0ca6315dea4bfd2080c2a2a5c1e998ce69ec9e1325eac3d7f57755c820f45d75e147517b4be4ee3134c2af7327022f57072553dc3f07492d4c59122e420f6e4141b2d537600bf0d471a91047b046732e316488f3a59a074908d267ec0c8dd716661d65d388667f61fff74bc5bd5301e8a48effbd67389e98adc2fcab186b07ecc26566edf0bfa13bbf9a9832e103745c1dcf65aa13fbc9a16eb519c3c03cf4a4054d8b81acb45bcc6586365ed0af59bc5980a6d545dbe046fe735d4435c19a76888b3e8044960b093b731edf4a9d2045017d975038eb4b0da8acbe37ba74aaf6c8bb77fe1d168599c6e947edd14a2dba9a5a1b8eba210cbf961106775741800009232223c8c0f89a43634792b340df49cb52885aea56d2979cc92b1454de8df2b1ace60f18b2ff921dc70613ac6657ec1246eb5f75e58b68472aae3d7f7746a2be9a0be1dffb8802ecf4a0209577885d146f731ace8b9074ac484d66e397dbf1a17afb9d2785684c19e1d41cbd44df717d5a896d102e1957e884c136fca940c021db60bed7b04e2ee6caa766dfac982e8c2034afa253c5ea53773f3dd7c08be1842a8e89ee6a71b71bccd771f859469f7a221db7103db57127ec5d475d2793b01d9f04459390b0f359b28b1a4c7499f85aa0fdee901e7f49e03e90f3eb06c7d55296479e4603d21ee0e2639ed2aae6191c14796b047eb9b3cc2c90270bef8cd20384398aa37fd04610017600910053a1a1661521b9e44edfcc2046f6eb693473bebe5efe2934b897ce0c4e475e5c46b7db5cceb848cdfe068c85f7c8f987f3b213947b83237f1b8fd1b816b33dab29de1068ed8179bdc5f164a6c7d1a677cf3d029767296d821c2ea33e33445a22d4efec5e7ce30be47e45a20abfd478d13074cfe4209fa724a65f81a5ce91034c2d7b9deeb04db306aa598aaa29c4691e83de9af018537a01c330a440840cde03456ba685aed26c0264428c7f60217e89479d2d6f94cb37d6c111547ee9f56c68c11569dfee87a3b1bf98df72f9c1415585fd5ccaafdf748808e61d61c023c6793113bc713b47143f353d737358c7c24cf1aeb936ff8ded6650190310dd820230d6c002d4fcba85deaab4bdfbb6b03a4037cf445ea9844691a31b6873745b404e06742a312c011cde6151e4d51dfd5fb4102adf63b0004d27289ef020e30b8443379823931e6c9ae36d411f124f5ac011fe00f8320c968ff45a872151ab5412eb8fb6029b3f42dee2d435168c3246c3f75e27a0fa47706f7a1966cede29dff67772161cbff27aeb0da3b9350b67</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-xray">
-      <input class="hbe hbe-input-field hbe-input-field-xray" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-xray" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-xray">啊偶，好像有东西被加密了, 请输入通行密钥.</span>
-      </label>
-      <svg class="hbe hbe-graphic hbe-graphic-xray" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
-        <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"></path>
-        <path d="M0,2.5c0,0,298.666,0,399.333,0C448.336,2.5,513.994,13,597,13c77.327,0,135-10.5,200.999-10.5c95.996,0,402.001,0,402.001,0"></path>
-      </svg>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
-      <categories>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>secret</tag>
-        <tag>计算机网络</tag>
-        <tag>协议</tag>
-        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>

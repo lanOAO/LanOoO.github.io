@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#1c241c"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/AAAASpring.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32-32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16-16.ico">
+  <link rel="mask-icon" href="/images/AAAASpring.jpg" color="#1c241c">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.lanouo.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism-solarizedlight.min","dark":"prism-dark.min"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeInUp","post_header":"fadeIn","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInRight"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="一些命令记录，由GPT补充生成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClaudeCode使用记录">
+<meta property="og:url" content="http://blog.lanouo.xyz/Claudecode_list.html">
+<meta property="og:site_name" content="幽篁里">
+<meta property="og:description" content="一些命令记录，由GPT补充生成">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-02T01:08:00.000Z">
+<meta property="article:modified_time" content="2026-06-02T02:21:36.110Z">
+<meta property="article:author" content="LanOoO">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://blog.lanouo.xyz/Claudecode_list.html">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://blog.lanouo.xyz/Claudecode_list.html","path":"Claudecode_list.html","title":"ClaudeCode使用记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ClaudeCode使用记录 | 幽篁里</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/7.2.0/pangu.umd.js" integrity="sha256-JnmRRnJK7DC6RQJbAJb6AXOM9OmWzS6z8eYultk/48Y=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script defer src="https://vercount.one/js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+<script class="next-config" data-name="subtitle_typing" type="application/json">{"enable":true,"typing_speed":150,"deleting_speed":50,"pause_before_delete":5000,"pause_before_type":0,"subtitles":["今天过的怎么样*°▽°*","快点毕业吧(╬▔皿▔)╯","欢迎来到Lan的杂货铺^^","(⓿_⓿)上班shangban……","Claude Code好好用(╯▽╰ )","没想到还有吧( •̀ ω •́ )y"]}</script>
+    <script defer src="/lib/subtitle_typing.js"></script><script>
+document.addEventListener("DOMContentLoaded", function() {
+  const more = document.getElementById('more');
+  const metaItem = document.querySelector('.post-meta-item-text'); // 定位目标元素
+  if (!more || !metaItem) return;
+
+  const metaRect = metaItem.getBoundingClientRect();
+  const scrollTop = window.scrollY || window.pageYOffset;
+  const metaBottom = metaRect.bottom + scrollTop; // 元素底部相对于文档顶部
+
+  let prev = more.previousElementSibling;
+  const ps = [];
+
+  while (prev) {
+    if (prev.tagName.toLowerCase() === 'p') {
+      ps.unshift(prev);
+    }
+    prev = prev.previousElementSibling;
+  }
+
+  ps.forEach((p, index) => {
+    p.style.color = '#888888';
+    p.style.fontSize = '0.9rem';
+    p.style.textAlign = 'center';
+    p.style.lineHeight = '1.4';
+
+    if (index === 0) {
+      // 设置第一个 <p> 的 marginTop，使其紧贴 .post-meta-item-text 底部
+      const pRect = p.getBoundingClientRect();
+      const pCurrentTop = pRect.top + scrollTop;
+      const marginTop = metaBottom - pCurrentTop;
+      p.style.marginTop = `${marginTop}*1.1px`;
+    }
+
+    if (index === ps.length - 1) {
+      p.style.marginBottom = '90px';
+    }
+  });
+});
+</script>
+
+
+<!-- 使用自定义标签，chars属性可以写要循环的内容
+<an_loadingn chars="123456" interval="500"></an_loading>
+-->
+<script>
+class CharAnimation extends HTMLElement {
+  constructor() {
+    super();
+    this.index = 0;
+    this.shadow = this.attachShadow({mode: 'open'});
+    this.display = document.createElement('span');
+    this.shadow.appendChild(this.display);
+  }
+
+  connectedCallback() {
+    this.chars = this.getAttribute('chars') || '.';
+    this.interval = parseInt(this.getAttribute('interval')) || 500;
+
+    this.timer = setInterval(() => {
+      this.index++;
+      if(this.index > this.chars.length) this.index = 1;
+      this.display.textContent = this.chars.slice(0, this.index);
+    }, this.interval);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.timer);
+  }
+}
+
+customElements.define('an_loading', CharAnimation);
+</script>
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+    <script src="/js/hexo_resize_image.js"></script>
+    <script src="/js/leaf-background.js"></script>
+  <!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="幽篁里" type="application/atom+xml">
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">幽篁里</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Quidquid latine dictum sit, altum sonatur.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">51</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">32</span></a></li><li class="menu-item menu-item-links"><a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Claude-Code-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">Claude Code 常用命令速查表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%EF%BC%88Shift-Tab%E5%88%87%E6%8D%A2%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">工作模式（Shift+Tab切换）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">项目初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CLAUDE-md-%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">CLAUDE.md 管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">后台任务管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%BC%95%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">文件引用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git-%E9%9B%86%E6%88%90"><span class="nav-number">7.</span> <span class="nav-text">Git 集成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">8.</span> <span class="nav-text">常见开发工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%90%86%E8%A7%A3%E9%A1%B9%E7%9B%AE"><span class="nav-number">8.1.</span> <span class="nav-text">1. 理解项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BF%AE%E5%A4%8DBug"><span class="nav-number">8.2.</span> <span class="nav-text">2. 修复Bug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E9%87%8D%E6%9E%84"><span class="nav-number">8.3.</span> <span class="nav-text">3. 重构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%B5%8B%E8%AF%95"><span class="nav-number">8.4.</span> <span class="nav-text">4. 自动生成测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Code-Review"><span class="nav-number">8.5.</span> <span class="nav-text">5. Code Review</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hooks-%E8%87%AA%E5%8A%A8%E5%8C%96"><span class="nav-number">9.</span> <span class="nav-text">Hooks 自动化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="nav-number">10.</span> <span class="nav-text">实用技巧</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E9%A2%91%E7%BB%84%E5%90%88"><span class="nav-number">11.</span> <span class="nav-text">高频组合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%BC%A0%E8%A1%A8%E8%AE%B0%E4%BD%8F%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84-10-%E4%B8%AA"><span class="nav-number">11.1.</span> <span class="nav-text">一张表记住最重要的 10 个</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LanOoO"
+      src="/images/AAAASpring.jpg">
+  <p class="site-author-name" itemprop="name">LanOoO</p>
+  <div class="site-description" itemprop="description">在这里摊开一小片灵魂</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="mailto:qiulannana@163.com" title="E-Mail → mailto:qiulannana@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://steamcommunity.com/id/lanOoO6979" title="Steam → https:&#x2F;&#x2F;steamcommunity.com&#x2F;id&#x2F;lanOoO6979" rel="noopener me" target="_blank"><i class="fab fa-steam fa-fw"></i>Steam</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://music.163.com/#/user/home?id=2127332042" title="CloudMusic → https:&#x2F;&#x2F;music.163.com&#x2F;#&#x2F;user&#x2F;home?id&#x3D;2127332042" rel="noopener me" target="_blank"><i class="fa fa-music fa-fw"></i>CloudMusic</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://monkeytype.com/profile/LanOuO" title="monkeytype → https:&#x2F;&#x2F;monkeytype.com&#x2F;profile&#x2F;LanOuO" rel="noopener me" target="_blank"><i class="fa fa-kayboard fa-fw"></i>monkeytype</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.lanouo.xyz/Claudecode_list.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/AAAASpring.jpg">
+      <meta itemprop="name" content="LanOoO">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="幽篁里">
+      <meta itemprop="description" content="在这里摊开一小片灵魂">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ClaudeCode使用记录 | 幽篁里">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ClaudeCode使用记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-06-02 09:08:00 / 修改时间：10:21:36" itemprop="dateCreated datePublished" datetime="2026-06-02T09:08:00+08:00">2026-06-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">工具使用</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">效率工具</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>一些命令记录，由GPT补充生成</p>
+<span id="more"></span>
+
+<table>
+<thead>
+<tr>
+<th>指令 &#x2F; 快捷键</th>
+<th>作用</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&#x2F;compact</td>
+<td>压缩对话上下文，保留核心摘要</td>
+<td>对话过长 token 超限时</td>
+</tr>
+<tr>
+<td>&#x2F;clear</td>
+<td>清空所有对话历史，全新开始</td>
+<td>切换到完全不同的任务时</td>
+</tr>
+<tr>
+<td>claude -c</td>
+<td>启动时恢复上一次对话</td>
+<td>次日继续昨天未完成的工作</td>
+</tr>
+<tr>
+<td>Ctrl+B</td>
+<td>将当前任务挂到后台运行</td>
+<td>让 AI 后台编译，前台讨论下一步</td>
+</tr>
+<tr>
+<td>ESC×2 (&#x2F;rewind)</td>
+<td>回退或总结（回滚 AI 操作）</td>
+<td>AI 改错了代码，快速撤销</td>
+</tr>
+<tr>
+<td>↓ &#x2F; &#x2F;tasks</td>
+<td>管理后台任务（查看&#x2F;停止）</td>
+<td>检查后台编译&#x2F;测试是否完成</td>
+</tr>
+<tr>
+<td>Ctrl+T</td>
+<td>显示&#x2F;隐藏任务列表面板</td>
+<td>查看 Claude 创建的任务进度</td>
+</tr>
+<tr>
+<td>Alt+V</td>
+<td>粘贴图像（Windows）</td>
+<td>截图粘贴给 Claude 分析 UI&#x2F;报错</td>
+</tr>
+<tr>
+<td>&#x2F;memory</td>
+<td>打开并编辑 <a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=272829725&content_type=Article&match_order=1&q=CLAUDE.md&zhida_source=entity">CLAUDE.md</a></td>
+<td>修改项目规则或个人偏好</td>
+</tr>
+<tr>
+<td>&#x2F;init</td>
+<td>自动生成 CLAUDE.md 初稿</td>
+<td>新项目首次接入 Claude Code</td>
+</tr>
+<tr>
+<td>&#x2F;hooks</td>
+<td>配置工具钩子（自动化触发）</td>
+<td>写文件后自动 prettier 格式化</td>
+</tr>
+<tr>
+<td>+Enter</td>
+<td>输入框内换行（不发送消息）</td>
+<td>输入多行代码或多段需求描述时</td>
+</tr>
+<tr>
+<td>Shift+Tab</td>
+<td>循环切换三种工作模式</td>
+<td>从 Plan Mode 切到 Accept Edits 执行</td>
+</tr>
+</tbody></table>
+<h1 id="Claude-Code-常用命令速查表"><a href="#Claude-Code-常用命令速查表" class="headerlink" title="Claude Code 常用命令速查表"></a>Claude Code 常用命令速查表</h1><table>
+<thead>
+<tr>
+<th>指令 &#x2F; 快捷键</th>
+<th>作用</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/compact</code></td>
+<td>压缩对话上下文，保留核心摘要</td>
+<td>对话过长，避免上下文超限</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>清空当前会话</td>
+<td>开启全新任务</td>
+</tr>
+<tr>
+<td><code>claude -c</code></td>
+<td>恢复最近一次会话</td>
+<td>第二天继续开发</td>
+</tr>
+<tr>
+<td><code>claude</code></td>
+<td>启动 Claude Code</td>
+<td>开始工作</td>
+</tr>
+<tr>
+<td><code>claude .</code></td>
+<td>在当前项目目录启动</td>
+<td>打开当前工程</td>
+</tr>
+<tr>
+<td><code>claude /path/project</code></td>
+<td>打开指定项目</td>
+<td>切换工程</td>
+</tr>
+<tr>
+<td><code>Ctrl+B</code></td>
+<td>后台运行当前任务</td>
+<td>编译、测试耗时较长</td>
+</tr>
+<tr>
+<td><code>/tasks</code></td>
+<td>查看后台任务</td>
+<td>查看运行状态</td>
+</tr>
+<tr>
+<td><code>↓</code></td>
+<td>快速打开任务列表</td>
+<td>检查后台工作</td>
+</tr>
+<tr>
+<td><code>Ctrl+T</code></td>
+<td>显示&#x2F;隐藏任务面板</td>
+<td>查看所有任务</td>
+</tr>
+<tr>
+<td><code>ESC ESC</code></td>
+<td>回退上一步操作</td>
+<td>AI改坏代码时</td>
+</tr>
+<tr>
+<td><code>/rewind</code></td>
+<td>回滚到之前状态</td>
+<td>撤销最近操作</td>
+</tr>
+<tr>
+<td><code>Shift+Tab</code></td>
+<td>切换工作模式</td>
+<td>Plan ↔ Edit ↔ Accept</td>
+</tr>
+<tr>
+<td><code>Enter</code></td>
+<td>发送消息</td>
+<td>正常交互</td>
+</tr>
+<tr>
+<td><code>Shift+Enter</code></td>
+<td>输入框换行</td>
+<td>多行需求</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>中断当前执行</td>
+<td>停止编译&#x2F;测试</td>
+</tr>
+<tr>
+<td><code>Ctrl+L</code></td>
+<td>清空终端显示</td>
+<td>保持界面整洁</td>
+</tr>
+<tr>
+<td><code>Alt+V</code></td>
+<td>粘贴截图（Windows）</td>
+<td>分析错误截图</td>
+</tr>
+<tr>
+<td>拖拽文件</td>
+<td>上传文件</td>
+<td>分析日志、代码</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="工作模式（Shift-Tab切换）"><a href="#工作模式（Shift-Tab切换）" class="headerlink" title="工作模式（Shift+Tab切换）"></a>工作模式（Shift+Tab切换）</h1><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>作用</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Plan Mode</td>
+<td>规划模式</td>
+<td>只分析，不改代码</td>
+</tr>
+<tr>
+<td>Edit Mode</td>
+<td>编辑模式</td>
+<td>生成修改建议</td>
+</tr>
+<tr>
+<td>Accept Edits Mode</td>
+<td>执行模式</td>
+<td>自动修改文件</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h1><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>作用</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/init</code></td>
+<td>生成 CLAUDE.md</td>
+<td>新项目接入</td>
+</tr>
+<tr>
+<td><code>/memory</code></td>
+<td>编辑 CLAUDE.md</td>
+<td>调整项目规则</td>
+</tr>
+<tr>
+<td><code>/hooks</code></td>
+<td>配置自动钩子</td>
+<td>自动格式化代码</td>
+</tr>
+<tr>
+<td><code>/config</code></td>
+<td>查看配置</td>
+<td>调试环境</td>
+</tr>
+<tr>
+<td><code>/doctor</code></td>
+<td>检查环境问题</td>
+<td>Claude运行异常</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="CLAUDE-md-管理"><a href="#CLAUDE-md-管理" class="headerlink" title="CLAUDE.md 管理"></a>CLAUDE.md 管理</h1><p>CLAUDE.md 相当于项目级系统提示词。</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>创建</td>
+<td><code>/init</code></td>
+</tr>
+<tr>
+<td>编辑</td>
+<td><code>/memory</code></td>
+</tr>
+<tr>
+<td>查看</td>
+<td><code>cat CLAUDE.md</code></td>
+</tr>
+<tr>
+<td>项目共享规范</td>
+<td>提交到Git</td>
+</tr>
+</tbody></table>
+<p>常见内容：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 项目规范</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 使用 Python 3.12</span><br><span class="line"><span class="bullet">-</span> 使用 Ruff</span><br><span class="line"><span class="bullet">-</span> 使用 Black</span><br><span class="line"><span class="bullet">-</span> 所有回复使用中文</span><br><span class="line"><span class="bullet">-</span> 优先编写单元测试</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="后台任务管理"><a href="#后台任务管理" class="headerlink" title="后台任务管理"></a>后台任务管理</h1><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>挂后台</td>
+<td>Ctrl+B</td>
+</tr>
+<tr>
+<td>查看任务</td>
+<td>&#x2F;tasks</td>
+</tr>
+<tr>
+<td>停止任务</td>
+<td>tasks界面</td>
+</tr>
+<tr>
+<td>恢复输出</td>
+<td>点击任务</td>
+</tr>
+<tr>
+<td>多任务并行</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译项目</span></span><br><span class="line">npm run build</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ctrl+B</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 后台运行</span></span><br></pre></td></tr></table></figure>
+
+<p>然后继续：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分析一下架构设计</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="文件引用"><a href="#文件引用" class="headerlink" title="文件引用"></a>文件引用</h1><p>Claude Code支持直接引用文件。</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@file.py</code></td>
+<td>引用文件</td>
+</tr>
+<tr>
+<td><code>@src/main.py</code></td>
+<td>指定路径</td>
+</tr>
+<tr>
+<td><code>@folder</code></td>
+<td>引用目录</td>
+</tr>
+<tr>
+<td><code>@git diff</code></td>
+<td>引用改动</td>
+</tr>
+<tr>
+<td><code>@README.md</code></td>
+<td>引用文档</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">解释 @src/server.py</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据 @README.md 更新项目结构</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Git-集成"><a href="#Git-集成" class="headerlink" title="Git 集成"></a>Git 集成</h1><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/review</code></td>
+<td>Review代码</td>
+</tr>
+<tr>
+<td><code>/pr</code></td>
+<td>生成PR</td>
+</tr>
+<tr>
+<td><code>@git diff</code></td>
+<td>分析改动</td>
+</tr>
+<tr>
+<td><code>@git status</code></td>
+<td>查看状态</td>
+</tr>
+<tr>
+<td><code>@git log</code></td>
+<td>分析提交历史</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Review @git diff</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据 @git diff 生成PR说明</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="常见开发工作流"><a href="#常见开发工作流" class="headerlink" title="常见开发工作流"></a>常见开发工作流</h1><h2 id="1-理解项目"><a href="#1-理解项目" class="headerlink" title="1. 理解项目"></a>1. 理解项目</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分析整个项目结构</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">阅读 @src</span><br><span class="line">解释架构设计</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-修复Bug"><a href="#2-修复Bug" class="headerlink" title="2. 修复Bug"></a>2. 修复Bug</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">分析以下报错</span><br><span class="line"></span><br><span class="line">@error.log</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">定位根因</span><br><span class="line">给出修复方案</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-重构"><a href="#3-重构" class="headerlink" title="3. 重构"></a>3. 重构</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">重构 @main.py</span><br><span class="line"></span><br><span class="line">要求：</span><br><span class="line">- 提高可维护性</span><br><span class="line">- 保持功能一致</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-自动生成测试"><a href="#4-自动生成测试" class="headerlink" title="4. 自动生成测试"></a>4. 自动生成测试</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为 @service.py 编写单元测试</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-Code-Review"><a href="#5-Code-Review" class="headerlink" title="5. Code Review"></a>5. Code Review</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Review @git diff</span><br></pre></td></tr></table></figure>
+
+<p>关注：</p>
+<ul>
+<li><p>Bug</p>
+</li>
+<li><p>性能</p>
+</li>
+<li><p>安全</p>
+</li>
+<li><p>可维护性</p>
+</li>
+</ul>
+<hr>
+<h1 id="Hooks-自动化"><a href="#Hooks-自动化" class="headerlink" title="Hooks 自动化"></a>Hooks 自动化</h1><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>Hook</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>保存后格式化</td>
+<td>prettier</td>
+</tr>
+<tr>
+<td>提交前检查</td>
+<td>lint</td>
+</tr>
+<tr>
+<td>自动测试</td>
+<td>pytest</td>
+</tr>
+<tr>
+<td>自动构建</td>
+<td>build</td>
+</tr>
+</tbody></table>
+<p>配置入口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/hooks</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="实用技巧"><a href="#实用技巧" class="headerlink" title="实用技巧"></a>实用技巧</h1><table>
+<thead>
+<tr>
+<th>技巧</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>先 Plan 再 Edit</td>
+<td>降低误改代码风险</td>
+</tr>
+<tr>
+<td>大项目先 <code>/compact</code></td>
+<td>节省上下文</td>
+</tr>
+<tr>
+<td>使用 CLAUDE.md</td>
+<td>固定团队规范</td>
+</tr>
+<tr>
+<td>后台运行编译</td>
+<td>提高效率</td>
+</tr>
+<tr>
+<td>善用 <code>@git diff</code></td>
+<td>快速Review</td>
+</tr>
+<tr>
+<td>善用 <code>@文件名</code></td>
+<td>精准定位问题</td>
+</tr>
+<tr>
+<td>长任务 Ctrl+B</td>
+<td>避免阻塞</td>
+</tr>
+<tr>
+<td>出错 <code>/rewind</code></td>
+<td>快速回滚</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="高频组合"><a href="#高频组合" class="headerlink" title="高频组合"></a>高频组合</h1><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/init</span><br></pre></td></tr></table></figure>
+
+<p>新项目初始化</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/memory</span><br></pre></td></tr></table></figure>
+
+<p>修改项目规范</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Review @git diff</span><br></pre></td></tr></table></figure>
+
+<p>代码审查</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">分析 @src</span><br><span class="line">生成架构图</span><br></pre></td></tr></table></figure>
+
+<p>项目理解</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为 @main.py 编写测试</span><br></pre></td></tr></table></figure>
+
+<p>测试生成</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">解释 @Dockerfile</span><br></pre></td></tr></table></figure>
+
+<p>容器分析</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">分析 @logs/error.log</span><br><span class="line">定位问题</span><br></pre></td></tr></table></figure>
+
+<p>日志排查</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@git diff</span><br><span class="line">生成PR说明</span><br></pre></td></tr></table></figure>
+
+<p>提交前整理</p>
+<hr>
+<h2 id="一张表记住最重要的-10-个"><a href="#一张表记住最重要的-10-个" class="headerlink" title="一张表记住最重要的 10 个"></a>一张表记住最重要的 10 个</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/init</code></td>
+<td>初始化项目</td>
+</tr>
+<tr>
+<td><code>/memory</code></td>
+<td>管理 CLAUDE.md</td>
+</tr>
+<tr>
+<td><code>/compact</code></td>
+<td>压缩上下文</td>
+</tr>
+<tr>
+<td><code>/clear</code></td>
+<td>新会话</td>
+</tr>
+<tr>
+<td><code>/tasks</code></td>
+<td>查看后台任务</td>
+</tr>
+<tr>
+<td><code>Ctrl+B</code></td>
+<td>后台运行</td>
+</tr>
+<tr>
+<td><code>ESC ESC</code></td>
+<td>回滚</td>
+</tr>
+<tr>
+<td><code>Shift+Tab</code></td>
+<td>切换模式</td>
+</tr>
+<tr>
+<td><code>@文件</code></td>
+<td>引用文件</td>
+</tr>
+<tr>
+<td><code>@git diff</code></td>
+<td>代码审查</td>
+</tr>
+</tbody></table>
+<p>这基本覆盖了日常使用 Claude Code 时 90% 以上的高频操作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/k8s_install.html" rel="prev" title="K8s搭建记录">
+                  <i class="fa fa-angle-left"></i> K8s搭建记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/undefined.html" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2025 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fas fa-star"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LanOoO</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">95k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:26</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
